@@ -1,0 +1,51 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import FurusatoCalc from '../../../components/FurusatoCalc.astro';
+import AffiliateSlot from '../../../components/AffiliateSlot.astro';
+---
+
+<Layout
+  lang="en"
+  title="Furusato Nozei Limit Calculator — The ¥2,000 Out-of-Pocket Cap Estimate | yuzucalc"
+  description="Estimate how much you can donate under Japan's hometown-tax scheme before your out-of-pocket cost exceeds ¥2,000. Computed from the statutory formula and resident-tax engine."
+  path="/en/furusato/"
+  altPath="/furusato/"
+>
+  <h1>Furusato nozei donation limit (estimate)</h1>
+  <p class="lede">Japan's hometown-tax scheme lets you redirect part of your resident tax to a municipality of your choice and receive local gifts in return — as long as your donation stays under the limit where your out-of-pocket cost is exactly ¥2,000. That limit is set by 20% of your resident-tax income levy and solved marginal income-tax rate. This calculator evaluates the statutory formula using our resident-tax engine (¥430,000 basic deduction, adjustment credit, municipal surtaxes, and solved marginal rates) to provide an accurate estimate (目安).</p>
+  <p><span class="stamp">Statutory formula model · Solved marginal rates (basic deduction · adjustment credit · surtax municipalities)</span></p>
+
+  <FurusatoCalc lang="en" />
+
+  <h2>How the limit works (statutory formula)</h2>
+  <div class="formula">(Donation − ¥2,000) × (90% − marginal income-tax rate × 1.021) = resident income levy × 20%</div>
+  <p>The donated amount (minus ¥2,000) returns through three channels: an income-tax deduction, a 10% resident-tax basic credit, and a resident-tax special credit covering the rest. The special credit is capped at 20% of your income levy — past that point, every extra yen donated is an out-of-pocket expense. Total eligible donations are also capped by law at 30% of total income for the resident basic leg and 40% for the income-tax leg.</p>
+
+  <h3>Important notice (statutory estimate, not a tax guarantee)</h3>
+  <p>Results from this calculator are <strong>estimates (目安)</strong> derived from the statutory formulas under the Local Tax Act and Income Tax Act. They do not constitute tax advice or guarantee an individual's exact personal tax ceiling. Other credits (such as mortgage deductions, medical expense deductions, and iDeCo contributions) as well as non-salary income alter your actual taxable income and available limit. For mathematical derivations and official validation tests, see <a href="/en/methodology/">Validation & Sources</a>.</p>
+
+  <AffiliateSlot
+    lang="en"
+    title="Choosing where to donate"
+    body="Once you know your estimated limit, the major furusato nozei portals list gifts by municipality and category. Partner links will appear here once agreements are in place."
+    linkLabel="Furusato nozei portals (partner link — placeholder)"
+  />
+
+  <h2>Frequently asked questions</h2>
+  <dl class="faq">
+    <dt>Does the one-stop exception (wanstoppu) change the limit?</dt>
+    <dd>No. It only shifts the whole credit onto resident tax; the 20%-of-levy cap logic is identical.</dd>
+    <dt>We are a dual-income couple. How should we split donations?</dt>
+    <dd>Credits attach to the person who donates, so compute the limit per earner and donate under each name separately.</dd>
+    <dt>When do I see the money back?</dt>
+    <dd>The income-tax part refunds after filing; the resident-tax part reduces next year's monthly instalments from June.</dd>
+  </dl>
+
+  <h2>Related calculators</h2>
+  <div class="mesh">
+    <a href="/en/resident-tax/">Resident tax</a>
+    <a href="/en/annual/">Annual salary & tax</a>
+    <a href="/en/take-home/">Monthly take-home</a>
+    <a href="/en/methodology/">Validation & sources</a>
+  </div>
+</Layout>

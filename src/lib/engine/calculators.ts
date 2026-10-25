@@ -2,7 +2,7 @@
  * calculators.ts — the five launch calculators, composed from the
  * validated primitives. All money in whole yen.
  */
-import type { Column, WithholdingVersion } from './params.ts';
+import { annualParams, type Column, type WithholdingVersion } from './params.ts';
 import {
   monthlyPremiums,
   bonusPremiums,
@@ -194,10 +194,26 @@ export interface FurusatoResult {
 }
 
 /**
- * Full-benefit limit D solves:
- *   (D - 2000) x (1 - 0.10 - marginalRate x 1.021) = 0.20 x shotokuwari
- * (income-tax saving + resident basic credit + resident special credit,
- * the special credit capped at 20% of the resident income levy).
+ * furusatoLimit — Full-benefit donation limit D where self-burden is exactly ¥2,000.
+ *
+ * Statutory basis:
+ * 1. Resident tax special credit (特例控除額) cap = 20% of resident income levy (所得割額).
+ * 2. Resident tax basic credit (基本控除額) = (D - 2,000) x 10%, capped at 30% of total income (総所得金額等).
+ * 3. Income tax deduction (寄附金控除) = (D - 2,000) x marginal rate x 1.021 (復興特別所得税),
+ *    capped at 40% of total income (総所得金額等).
+ *
+ * Solves:
+ *   (D - 2,000) x (0.90 - marginalRate x 1.021) = 0.20 x shotokuwari
+ *
+ * Implements:
+ * (a) Statutory eligibility ceilings (30% resident, 40% income tax of 総所得金額等, plus non-negative taxable income).
+ * (b) Fixed-point marginal-rate solving: solves the marginal income-tax rate consistently
+ *     with post-donation taxable income for 確定申告 filers (iterates to a fixed point, falling back
+ *     to the conservative rate on boundary oscillation to prevent exceeding the 20% cap).
+ *
+ * Notes on fidelity audit:
+ * - Hardcoded vintage: evaluated under 'r8' tax schedule and resident-tax parameters.
+ * - Aggregate return: returns the aggregate full-benefit limit rather than decomposing into the 3 statutory legs.
  */
 export function furusatoLimit(input: FurusatoInput): FurusatoResult {
   const resident = residentTax({
@@ -215,8 +231,74 @@ export function furusatoLimit(input: FurusatoInput): FurusatoResult {
     dependents: input.dependentTypes,
     year: 'r8',
   });
-  const denom = 0.9 - (annual.marginalRatePct * 1.021) / 100;
+
+  const totalIncome = Math.max(0, annual.salaryIncome);
+  const maxDonationResident = Math.floor(0.30 * totalIncome);
+  // Income tax leg is capped at 40% of total income:
+  // const maxDonationIncomeTax = Math.floor(0.40 * totalIncome);
+  // Since 30% <= 40%, the 30% resident basic cap binds first.
   const cap = 0.2 * resident.shotokuwari;
-  const limit = denom > 0 ? 2000 + Math.floor(cap / denom) : 2000;
-  return { resident, marginalRatePct: annual.marginalRatePct, limit, breakdown: { shotokuwariCap: cap, denominator: denom } };
+
+  // If taxable income is zero, shotokuwari is zero, or total income cannot support ¥2,000 self-pay:
+  if (annual.taxableIncome <= 0 || resident.shotokuwari <= 0 || maxDonationResident < 2000) {
+    const denom = 0.9 - (annual.marginalRatePct * 1.021) / 100;
+    return {
+      resident,
+      marginalRatePct: annual.marginalRatePct,
+      limit: 2000,
+      breakdown: { shotokuwariCap: cap, denominator: denom },
+    };
+  }
+
+  const getBracketRate = (taxable: number): number => {
+    for (const b of annualParams.brackets as { upTo: number | null; ratePct: number }[]) {
+      if (b.upTo === null || taxable <= b.upTo) return b.ratePct;
+    }
+    return 45;
+  };
+
+  let rate = annual.marginalRatePct;
+  let limit = 2000;
+  let denom = 0.9 - (rate * 1.021) / 100;
+  const seen = new Set<number>();
+
+  for (let iter = 0; iter < 6; iter++) {
+    denom = 0.9 - (rate * 1.021) / 100;
+    const rawLimit = denom > 0 ? 2000 + Math.floor(cap / denom) : 2000;
+    // Apply statutory eligibility ceilings:
+    // (1) 30% of 総所得金額等 for resident basic credit
+    // (2) donation deduction (limit - 2000) cannot exceed annual.taxableIncome
+    limit = Math.min(rawLimit, maxDonationResident, 2000 + annual.taxableIncome);
+    limit = Math.max(2000, limit);
+
+    const deduction = limit - 2000;
+    const postTaxableRaw = annual.taxableIncome - deduction;
+    const postTaxable = Math.max(0, Math.floor(postTaxableRaw / 1000) * 1000);
+    const postRate = getBracketRate(postTaxable);
+
+    if (postRate === rate) {
+      break;
+    }
+
+    if (seen.has(postRate)) {
+      // Boundary oscillation detected: select conservative rate (lower rate => higher denom => lower limit)
+      // to ensure self-burden does not exceed ¥2,000 under the statutory 20% cap.
+      rate = Math.min(rate, postRate);
+      denom = 0.9 - (rate * 1.021) / 100;
+      const safeRaw = denom > 0 ? 2000 + Math.floor(cap / denom) : 2000;
+      limit = Math.min(safeRaw, maxDonationResident, 2000 + annual.taxableIncome);
+      limit = Math.max(2000, limit);
+      break;
+    }
+
+    seen.add(rate);
+    rate = postRate;
+  }
+
+  return {
+    resident,
+    marginalRatePct: rate,
+    limit,
+    breakdown: { shotokuwariCap: cap, denominator: denom },
+  };
 }

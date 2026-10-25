@@ -1,0 +1,112 @@
+---
+import { furusatoLimit, listMunicipalities } from '../lib/engine/index.ts';
+import { yen } from '../lib/ui.ts';
+
+interface Props { lang: 'ja' | 'en' }
+const { lang } = Astro.props;
+const ja = lang === 'ja';
+const t = ja
+  ? {
+      gross: '年収（額面）', si: '社会保険料（年間）',
+      spouse: '配偶者控除あり（配偶者の所得48万円以下）',
+      depGeneral: '扶養親族（一般）', depSpecific: '特定扶養（19〜22歳）', depElderly: '老人扶養（別居）', depCohabit: '老人扶養（同居）',
+      municipality: 'お住まいの市区町村', standard: '標準（全国標準税率）',
+      result: '自己負担2,000円に収まる寄附の上限目安',
+      rows: {
+        shotoku: '住民税 所得割（控除前）', cap: '特例分の上限（所得割の20%）',
+        marginal: '所得税の限界税率', limit: '寄附上限の目安', burden: '自己負担',
+      },
+      note: '確定申告を行う前提の法定算式による目安試算です。ワンストップ特例でも上限の考え方は同じです。住宅ローン控除・医療費控除など他の控除や個人の税額状況によって実際の上限は変わります。算式の根拠や検証の詳細は「検証と出典」をご覧ください。',
+    }
+  : {
+      gross: 'Annual gross salary', si: 'Social insurance (annual)',
+      spouse: 'Spouse deduction (spouse income <= ¥480,000)',
+      depGeneral: 'Dependents (general)', depSpecific: 'Dependents 19-22 (specific)', depElderly: 'Elderly dependents (separate)', depCohabit: 'Elderly dependents (same household)',
+      municipality: 'Municipality of residence', standard: 'Standard (national standard rates)',
+      result: 'Estimated donation limit that keeps your out-of-pocket cost at ¥2,000',
+      rows: {
+        shotoku: 'Resident income levy (before credits)', cap: 'Special-credit cap (20% of the levy)',
+        marginal: 'Marginal income-tax rate', limit: 'Estimated donation limit', burden: 'Out-of-pocket',
+      },
+      note: 'Statutory formula estimate for tax-return filers (one-stop exception uses the same limit logic). Other credits (mortgage, medical) and personal tax circumstances affect your actual limit. See Validation & Sources for full methodology.',
+    };
+
+const municipalities = listMunicipalities();
+const def = furusatoLimit({ grossSalary: 6000000, socialInsurance: 850000, spouse: true, dependentTypes: [] });
+---
+
+<div class="grid2">
+  <div class="card">
+    <form class="calc" id="fr-form">
+      <label>{t.gross}<input name="gross" type="number" inputmode="numeric" min="0" step="10000" value="6000000" /></label>
+      <label>{t.si}<input name="si" type="number" inputmode="numeric" min="0" step="1000" value="850000" /></label>
+      <label>{t.municipality}
+        <select name="municipality">
+          <option value="">{t.standard}</option>
+          {municipalities.map((m) => <option value={m.municipality}>{ja ? m.municipality : `${m.municipality} (${m.prefecture})`}</option>)}
+        </select>
+      </label>
+      <label>{t.depGeneral}<input name="depGeneral" type="number" inputmode="numeric" min="0" max="10" value="0" /></label>
+      <label>{t.depSpecific}<input name="depSpecific" type="number" inputmode="numeric" min="0" max="10" value="0" /></label>
+      <label>{t.depElderly}<input name="depElderly" type="number" inputmode="numeric" min="0" max="10" value="0" /></label>
+      <label>{t.depCohabit}<input name="depCohabit" type="number" inputmode="numeric" min="0" max="10" value="0" /></label>
+      <label style="display:flex; gap:8px; align-items:center"><input name="spouse" type="checkbox" style="width:auto" checked /> {t.spouse}</label>
+    </form>
+    <p class="src" style="margin-top:14px">{t.note}</p>
+  </div>
+  <div class="card" id="fr-result" aria-live="polite">
+    <div class="src" style="font-weight:700; letter-spacing:.06em">{t.result}</div>
+    <div class="net-big"><span data-v="limit">{yen(def.limit)}</span></div>
+    <table class="breakdown"><tbody>
+      <tr class="sub"><td>{t.rows.shotoku}</td><td class="v num" data-v="shotoku">{yen(def.resident.shotokuwari)}</td></tr>
+      <tr class="sub"><td>{t.rows.cap}</td><td class="v num" data-v="cap">{yen(Math.floor(def.breakdown.shotokuwariCap))}</td></tr>
+      <tr class="sub"><td>{t.rows.marginal}</td><td class="v num" data-v="marginal">{def.marginalRatePct}%</td></tr>
+      <tr><td>{t.rows.burden}</td><td class="v num">¥2,000</td></tr>
+      <tr class="total"><td>{t.rows.limit}</td><td class="v num" data-v="limit2">{yen(def.limit)}</td></tr>
+    </tbody></table>
+    <div class="formula" style="margin-top:14px">(D − 2,000) × (90% − {ja ? '所得税率' : 'tax rate'} × 1.021) = {ja ? '所得割' : 'levy'} × 20%</div>
+  </div>
+</div>
+
+<script>
+  import { furusatoLimit, type DependentType } from '../lib/engine/index.ts';
+  import { yen, setText, queryParams, syncQuery, field, fieldNum } from '../lib/ui.ts';
+  const form = document.getElementById('fr-form') as HTMLFormElement;
+  const result = document.getElementById('fr-result') as HTMLElement;
+  function applyQuery() {
+    const q = queryParams();
+    const names = ['gross', 'si', 'municipality', 'depGeneral', 'depSpecific', 'depElderly', 'depCohabit'];
+    for (const n of names) if (q[n] != null) field(form, n).value = q[n];
+    if (q.spouse != null) (field(form, 'spouse') as HTMLInputElement).checked = q.spouse === '1';
+  }
+  function compute() {
+    const deps: DependentType[] = [];
+    const push = (name: string, type: DependentType) => {
+      const c = Math.min(10, Math.max(0, Math.floor(fieldNum(form, name, 0))));
+      for (let i = 0; i < c; i++) deps.push(type);
+    };
+    push('depGeneral', 'general'); push('depSpecific', 'specific'); push('depElderly', 'elderly'); push('depCohabit', 'elderlyCohabit');
+    const mun = field(form, 'municipality').value;
+    const r = furusatoLimit({
+      grossSalary: Math.max(0, fieldNum(form, 'gross', 0)),
+      socialInsurance: Math.max(0, fieldNum(form, 'si', 0)),
+      spouse: (field(form, 'spouse') as HTMLInputElement).checked,
+      dependentTypes: deps,
+      municipality: mun === '' ? undefined : mun,
+    });
+    setText(result, 'limit', yen(r.limit)); setText(result, 'limit2', yen(r.limit));
+    setText(result, 'shotoku', yen(r.resident.shotokuwari));
+    setText(result, 'cap', yen(Math.floor(r.breakdown.shotokuwariCap)));
+    setText(result, 'marginal', r.marginalRatePct + '%');
+    syncQuery({
+      gross: fieldNum(form, 'gross', 0), si: fieldNum(form, 'si', 0), municipality: mun === '' ? null : mun,
+      depGeneral: fieldNum(form, 'depGeneral', 0), depSpecific: fieldNum(form, 'depSpecific', 0),
+      depElderly: fieldNum(form, 'depElderly', 0), depCohabit: fieldNum(form, 'depCohabit', 0),
+      spouse: (field(form, 'spouse') as HTMLInputElement).checked ? 1 : 0,
+    });
+  }
+  applyQuery();
+  form.addEventListener('input', compute);
+  form.addEventListener('change', compute);
+  compute();
+</script>

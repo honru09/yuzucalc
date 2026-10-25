@@ -27,6 +27,9 @@ const enLabels: Record<string, string> = {
   'B8': 'Annual tax 2026 rules: ¥5,000,000 salary, ¥720,000 premiums, single -> tax',
   'B9': 'Annual tax 2025 rules (regression pair): same inputs -> tax',
   'B10': 'Resident tax: prior salary ¥4,800,000, premiums ¥700,000 -> annual / monthly / June',
+  'F1': 'Furusato zero taxable income: ¥1,500,000 salary, ¥200,000 premiums -> limit collapses to ¥2,000 self-pay floor',
+  'F2': 'Furusato bracket boundary crossing: ¥6,750,000 salary -> solved marginal rate 10% (pre-rate 20%), limit ¥91,610',
+  'F3': 'Furusato mid-income sanity hand-computed: ¥6,000,000 salary, single -> solved rate 10%, limit ¥78,576',
 };
 ---
 
@@ -57,11 +60,13 @@ const enLabels: Record<string, string> = {
     </tbody>
   </table>
 
-  <h2>Two honest corrections</h2>
+  <h2>Honest corrections & validation notes</h2>
   <h3>A3 — the no-prior-month bonus example</h3>
   <p>The NTA handbook example (bonus ¥907,800 → tax ¥4,320) predates the 2026 revision of the monthly withholding table (MOF Notice No. 122). Under the current table the relevant cell is ¥0, so this engine returns ¥0 and treats the printed example as pre-revision. The <em>method</em> (÷6, monthly table, ×6) is confirmed in current law: MOF Notice No. 115, note 4.</p>
   <h3>B8 — annual tax on a ¥5,000,000 salary</h3>
   <p>Our own pre-launch worksheet applied the 10% quick-calc row to a taxable income of ¥1,800,000. The official quick table (NTA Tax Answer No. 2260) places ¥1,800,000 in the 5% row: the correct tax is ¥91,800 (¥1,800,000 × 5% × 1.021). The engine follows the official table; the worksheet error is recorded here.</p>
+  <h3>F1–F3 — Furusato nozei statutory model audit</h3>
+  <p>When auditing the Ministry of Internal Affairs and Communications (MIC) April 2015 magazine table, our validation revealed that the table embedded a ~10% flat social insurance thumb rule rather than the statutory ~14.2% model (reproducing 21/21 cells under that assumption). Our furusato engine bypasses lookup table approximations: it connects directly to our full statutory resident-tax engine, enforces the 30% / 40% income ceilings, and iteratively solves the marginal income-tax rate to a consistent fixed point post-donation.</p>
 
   <h2>Parameter sources (primary sources only)</h2>
   <table class="breakdown">
@@ -76,6 +81,7 @@ const enLabels: Record<string, string> = {
       <tr><td>Employment-income & basic deductions</td><td>NTA Tax Answers No. 1410 / No. 1199 (2026)</td></tr>
       <tr><td>Income-tax quick table</td><td>NTA Tax Answer No. 2260</td></tr>
       <tr><td>Resident-tax municipal surtaxes</td><td>Confirmed from official city/prefecture pages (Yokohama, Kobe, Nagoya, Fukuoka, Sapporo, Miyagi Prefecture, Osaka City, Toyooka). Osaka City: per-capita levy ¥3,000 city + ¥1,300 prefecture (incl. a ¥300 prefectural forest-environment surcharge through FY2027) = ¥4,300 (Osaka City FY2026 tax-filing guide). Toyooka: city income levy 6.1%, prefectural per-capita levy ¥1,800 incl. ¥800 green tax (Toyooka City FY2026 guide).</td></tr>
+      <tr><td>Furusato nozei statutory credits & ceilings</td><td>Local Tax Act Supp. Prov. Art. 5-6 (special credit cap: 20% of income levy); Local Tax Act Art. 314-7 (basic credit: 10% of donation minus ¥2,000, 30% income ceiling); Income Tax Act Art. 78 (40% income ceiling); fixed-point marginal rate solving.</td></tr>
     </tbody>
   </table>
 

@@ -26,6 +26,7 @@ import {
   bonusPremiums,
   annualIncomeTax,
   residentTax,
+  furusatoLimit,
 } from '../src/lib/engine/index.ts';
 
 const cases = [];
@@ -132,6 +133,41 @@ check('B10', 'B10 resident tax: prior salary ¥4,800,000, SI ¥700,000 -> annual
     return [r.annual, r.monthlyInstalment, r.juneInstalment];
   },
   [229500, 19100, 19400]);
+
+/* ---- F1-F3: furusato nozei statutory validation ---- */
+// F1: zero-taxable-income donor -> eligibility ceiling binds, limit collapses to ¥2,000 self-pay floor
+check('F1', 'F1 (zero taxable income): gross ¥1,500,000, SI ¥200,000 -> limit collapses to ¥2,000 self-pay floor',
+  () => furusatoLimit({ grossSalary: 1500000, socialInsurance: 200000, spouse: false, dependentTypes: [] }).limit,
+  2000);
+
+// F2: bracket boundary crossing -> solved marginal rate is consistently post-donation (10%, not pre-rate 20%)
+check('F2', 'F2 (bracket boundary crossing): gross ¥6,750,000, SI ¥945,000 -> solved post-donation rate 10% (pre-rate was 20%), limit ¥91,610',
+  () => {
+    const r = furusatoLimit({ grossSalary: 6750000, socialInsurance: 945000, spouse: false, dependentTypes: [] });
+    return [r.marginalRatePct, r.limit];
+  },
+  [10, 91610]);
+
+/* ---- F3: mid-income sanity case cross-checked by hand computation ----
+ * Gross ¥6,000,000, SI ¥850,000, single (R8):
+ * 1. 給与所得控除 = 6,000,000 x 20% + 440,000 = ¥1,640,000 -> salary income = ¥4,360,000
+ * 2. 所得税 基礎控除 = ¥1,040,000 -> 課税所得 = 4,360,000 - 850,000 - 1,040,000 = ¥2,470,000 (10% bracket: 195万〜330万)
+ * 3. 住民税 基礎控除 = ¥430,000 -> 課税所得 = 4,360,000 - 850,000 - 430,000 = ¥3,080,000
+ *    調整控除: 人的控除差 (1,040,000 - 430,000) = 610,000. 課税所得>200万 -> max(2500, (610,000 - 1,080,000) x 5%) = ¥2,500
+ *    所得割 = 3,080,000 x 10% - 2,500 = ¥305,500
+ *    特例控除限度 (20%) = 305,500 x 0.20 = ¥61,100
+ * 4. 限界税率 10%: 分母 = 0.90 - 0.10 x 1.021 = 0.7979
+ *    特例分寄附額 = floor(61,100 / 0.7979) = ¥76,576 (76,576 x 0.7979 = 61,099.9904 <= 61,100)
+ *    限度額 D = 2,000 + 76,576 = ¥78,576
+ * 5. 寄附後 課税所得 = 2,470,000 - 76,576 = 2,393,424 -> ¥2,393,000 (10%ブラケット維持、不動点成立)
+ * 6. 限度枠チェック: 4,360,000 x 30% = ¥1,308,000 >> ¥78,576 (上限抵触なし)
+ */
+check('F3', 'F3 (mid-income sanity hand-computed): gross ¥6,000,000, SI ¥850,000 -> solved rate 10%, limit ¥78,576',
+  () => {
+    const r = furusatoLimit({ grossSalary: 6000000, socialInsurance: 850000, spouse: false, dependentTypes: [] });
+    return [r.marginalRatePct, r.limit];
+  },
+  [10, 78576]);
 
 /* ---- report ---- */
 let fails = 0;

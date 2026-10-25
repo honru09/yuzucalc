@@ -6,20 +6,21 @@ import validation from '../../data/validation-results.json';
 const calcs = [
   { href: '/en/take-home/', title: 'Take-Home Pay', desc: 'Monthly net pay with grades, prefectural health rates and the NTA withholding table. Net-to-gross solving included.' },
   { href: '/en/bonus/', title: 'Bonus Take-Home', desc: 'Bonus withholding from the official rate table (2026, all 21 rates), including the no-prior-month fallback.' },
-  { href: '/en/annual/', title: 'Annual Salary & Tax', desc: 'Annual income tax under the 2026 rules (¥1,040,000 basic deduction), annual take-home, and next year\u2019s resident tax.' },
-  { href: '/en/resident-tax/', title: 'Resident Tax & Year 2', desc: 'Resident tax from last year\u2019s salary — and the famous year-2 pay drop, simulated with your numbers.' },
+  { href: '/en/annual/', title: 'Annual Salary & Tax', desc: 'Annual income tax under the 2026 rules (¥1,040,000 basic deduction), annual take-home, and next year’s resident tax.' },
+  { href: '/en/resident-tax/', title: 'Resident Tax & Year 2', desc: 'Resident tax from last year’s salary — and the famous year-2 pay drop, simulated with your numbers.' },
+  { href: '/en/furusato/', title: 'Furusato Nozei Limit', desc: 'The ¥2,000 out-of-pocket cap estimate. Solved from the statutory resident levy, adjustment credit, and marginal rate.' },
 ];
 ---
 
 <Layout
   lang="en"
   title="yuzucalc — Japan Payroll Calculators, Validated Against Official Examples"
-  description="Take-home pay, bonuses, annual income tax and resident tax for Japan — computed only from primary sources (NTA, Kyokai Kenpo, MHLW) and validated against official worked examples."
+  description="Take-home pay, bonuses, annual income tax, resident tax, and furusato nozei limits for Japan — computed only from primary sources and validated against official worked examples."
   path="/en/"
   altPath="/"
 >
   <h1>Japan payroll math,<br />from primary sources only.</h1>
-  <p class="lede">yuzucalc computes take-home pay, bonuses, annual income tax and resident tax for salaries in Japan. Every rate comes from an official publication — the National Tax Agency, the Japan Health Insurance Association, the MHLW — and every calculator is validated against official worked examples before it goes live.</p>
+  <p class="lede">yuzucalc computes take-home pay, bonuses, annual income tax, resident tax, and furusato nozei limits for salaries in Japan. Every rate comes from an official publication — the National Tax Agency, the Japan Health Insurance Association, the MHLW, the Local Tax Act — and every calculator is validated against official worked examples before it goes live.</p>
   <p><span class="stamp"><span class="ok">{validation.passed}/{validation.total} official examples PASS</span> (<a href="/en/methodology/">see the published validation set</a>) · Rates: FY2026 / Tables: 2026</span></p>
 
   <h2>Calculators</h2>

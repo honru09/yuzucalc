@@ -1,0 +1,112 @@
+[
+ {
+  "municipality": "標準（全国標準）",
+  "prefecture": "—",
+  "shotokuwariTotalPct": 10,
+  "kintowariCity": 3000,
+  "kintowariPref": 1000,
+  "forestEnvTax": 1000,
+  "totalFlat": 5000,
+  "note": "政令指定都市は市8.0/県2.0に配分変更（合計不変）",
+  "source": "総務省・地方税法標準税率"
+ },
+ {
+  "municipality": "東京都特別区",
+  "prefecture": "東京都",
+  "shotokuwariTotalPct": 10,
+  "kintowariCity": 3000,
+  "kintowariPref": 1000,
+  "forestEnvTax": 1000,
+  "totalFlat": 5000,
+  "note": "超過課税なし（都は均等割超過のない10都道府県の一つ）",
+  "source": "参議院『立法と調査』No.486（2026.8）総務省資料（令和7年4月1日現在）"
+ },
+ {
+  "municipality": "横浜市",
+  "prefecture": "神奈川県",
+  "shotokuwariTotalPct": 10.025,
+  "kintowariCity": 3900,
+  "kintowariPref": 1300,
+  "forestEnvTax": 1000,
+  "totalFlat": 6200,
+  "note": "市民税均等割に横浜みどり税900円（〜令和10年度）、県民税均等割に水源環境保全税300円（〜令和8年度）、県所得割+0.025%（同税）",
+  "source": "横浜市公式 https://www.city.yokohama.lg.jp/kurashi/koseki-zei-hoken/zei/shiminzei-kojin/kojin-shiminzei.html"
+ },
+ {
+  "municipality": "神戸市",
+  "prefecture": "兵庫県",
+  "shotokuwariTotalPct": 10,
+  "kintowariCity": 3400,
+  "kintowariPref": 1800,
+  "forestEnvTax": 1000,
+  "totalFlat": 6200,
+  "note": "市民税均等割+400円＝認知症『神戸モデル』超過課税（2019〜2027年度）、県均等割は県民緑税800円含む1800円",
+  "source": "神戸市公式 https://www.city.kobe.lg.jp/a47148/kurashi/tax/kojin_shimin/ninchi_kobe.html ；県民緑税は兵庫県（二次集計経由・要一次確認）"
+ },
+ {
+  "municipality": "名古屋市",
+  "prefecture": "愛知県",
+  "shotokuwariTotalPct": 9.7,
+  "kintowariCity": 2800,
+  "kintowariPref": 1500,
+  "forestEnvTax": 1000,
+  "totalFlat": 5300,
+  "note": "全国唯一の標準未満。市民税減税：所得割7.7%・均等割2,800円。県均等割はあいち森と緑づくり税500円含む",
+  "source": "名古屋市公式 https://www.city.nagoya.jp/zaisei/shiminzei/1017987/1017990/1037569.html"
+ },
+ {
+  "municipality": "豊岡市",
+  "prefecture": "兵庫県",
+  "shotokuwariTotalPct": 10.1,
+  "kintowariCity": 3000,
+  "kintowariPref": 1800,
+  "forestEnvTax": 1000,
+  "totalFlat": 5800,
+  "note": "全国唯一の市町村所得割超過（市6.1%）。均等割は市3,000（標準）+県1,800（県民緑税800円込）",
+  "source": "豊岡市公式『令和8年度 市民税・県民税 申告のてびき』（city.toyooka.lg.jp）で一次確認済み"
+ },
+ {
+  "municipality": "福岡市",
+  "prefecture": "福岡県",
+  "shotokuwariTotalPct": 10,
+  "kintowariCity": 3000,
+  "kintowariPref": 1500,
+  "forestEnvTax": 1000,
+  "totalFlat": 5500,
+  "note": "県民税均等割1,500円（福岡県森林環境税500円含む）",
+  "source": "福岡県公式『県税のしおり』（data.bodik.jp オープンデータ）"
+ },
+ {
+  "municipality": "大阪市",
+  "prefecture": "大阪府",
+  "shotokuwariTotalPct": 10,
+  "kintowariCity": 3000,
+  "kintowariPref": 1300,
+  "forestEnvTax": 1000,
+  "totalFlat": 5300,
+  "note": "所得割は政令市配分で標準と同一。均等割：市民税3,000＋府民税1,300（標準1,000＋大阪府森林環境税300円加算・平成28〜令和9年度）。森林環境税（国税）1,000と合わせた定額合計5,300円",
+  "source": "大阪市公式『令和8年度分 市民税・府民税申告の手引き』（city.osaka.lg.jp）で一次確認済み"
+ },
+ {
+  "municipality": "札幌市",
+  "prefecture": "北海道",
+  "shotokuwariTotalPct": 10,
+  "kintowariCity": 3000,
+  "kintowariPref": 1000,
+  "forestEnvTax": 1000,
+  "totalFlat": 5000,
+  "note": "道・市とも超過課税なし（参議院集計の枠組みによる）。市公式ページの一次ピンは未実施（低リスク）",
+  "source": "参議院『立法と調査』No.486（総務省資料）"
+ },
+ {
+  "municipality": "宮城県（全市町村）",
+  "prefecture": "宮城県",
+  "shotokuwariTotalPct": 10,
+  "kintowariCity": 3000,
+  "kintowariPref": 2200,
+  "forestEnvTax": 1000,
+  "totalFlat": 6200,
+  "note": "県民税均等割＝標準1,000＋みやぎ環境税1,200（令和12年度まで延長）で県内一律2,200。仙台市固有の税率ではない（外部調査の『仙台2,200』はこの県税超過の誤読）。2026-10-25外部声称核实队が pref.miyagi.jp で一次確認",
+  "source": "宮城県公式 https://www.pref.miyagi.jp/"
+ }
+]

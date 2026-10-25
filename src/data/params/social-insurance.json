@@ -1,0 +1,401 @@
+{
+ "comment": "Social insurance parameters, FY2026 (premiums from Mar-2026 for health/pension; employment FY2026 Apr-Mar). Sources: 協会けんぽ FY2026 rate table (kyoukaikenpo.or.jp), 日本年金機構 (pension 18.3%), 厚労省 令和8年度雇用保険料率, こども家庭庁 (child support 0.23%). ratePct=null entries are filled from the official 47-prefecture table (research merge).",
+ "fiscalYear": 2026,
+ "healthRatesComplete": false,
+ "prefectures": [
+  {
+   "ja": "北海道",
+   "en": "Hokkaido",
+   "slug": "hokkaido",
+   "healthRatePct": 10.28
+  },
+  {
+   "ja": "青森県",
+   "en": "Aomori",
+   "slug": "aomori",
+   "healthRatePct": null
+  },
+  {
+   "ja": "岩手県",
+   "en": "Iwate",
+   "slug": "iwate",
+   "healthRatePct": null
+  },
+  {
+   "ja": "宮城県",
+   "en": "Miyagi",
+   "slug": "miyagi",
+   "healthRatePct": null
+  },
+  {
+   "ja": "秋田県",
+   "en": "Akita",
+   "slug": "akita",
+   "healthRatePct": null
+  },
+  {
+   "ja": "山形県",
+   "en": "Yamagata",
+   "slug": "yamagata",
+   "healthRatePct": null
+  },
+  {
+   "ja": "福島県",
+   "en": "Fukushima",
+   "slug": "fukushima",
+   "healthRatePct": null
+  },
+  {
+   "ja": "茨城県",
+   "en": "Ibaraki",
+   "slug": "ibaraki",
+   "healthRatePct": null
+  },
+  {
+   "ja": "栃木県",
+   "en": "Tochigi",
+   "slug": "tochigi",
+   "healthRatePct": null
+  },
+  {
+   "ja": "群馬県",
+   "en": "Gunma",
+   "slug": "gunma",
+   "healthRatePct": null
+  },
+  {
+   "ja": "埼玉県",
+   "en": "Saitama",
+   "slug": "saitama",
+   "healthRatePct": null
+  },
+  {
+   "ja": "千葉県",
+   "en": "Chiba",
+   "slug": "chiba",
+   "healthRatePct": null
+  },
+  {
+   "ja": "東京都",
+   "en": "Tokyo",
+   "slug": "tokyo",
+   "healthRatePct": 9.85
+  },
+  {
+   "ja": "神奈川県",
+   "en": "Kanagawa",
+   "slug": "kanagawa",
+   "healthRatePct": null
+  },
+  {
+   "ja": "新潟県",
+   "en": "Niigata",
+   "slug": "niigata",
+   "healthRatePct": null
+  },
+  {
+   "ja": "富山県",
+   "en": "Toyama",
+   "slug": "toyama",
+   "healthRatePct": null
+  },
+  {
+   "ja": "石川県",
+   "en": "Ishikawa",
+   "slug": "ishikawa",
+   "healthRatePct": null
+  },
+  {
+   "ja": "福井県",
+   "en": "Fukui",
+   "slug": "fukui",
+   "healthRatePct": null
+  },
+  {
+   "ja": "山梨県",
+   "en": "Yamanashi",
+   "slug": "yamanashi",
+   "healthRatePct": null
+  },
+  {
+   "ja": "長野県",
+   "en": "Nagano",
+   "slug": "nagano",
+   "healthRatePct": null
+  },
+  {
+   "ja": "岐阜県",
+   "en": "Gifu",
+   "slug": "gifu",
+   "healthRatePct": null
+  },
+  {
+   "ja": "静岡県",
+   "en": "Shizuoka",
+   "slug": "shizuoka",
+   "healthRatePct": null
+  },
+  {
+   "ja": "愛知県",
+   "en": "Aichi",
+   "slug": "aichi",
+   "healthRatePct": 9.93
+  },
+  {
+   "ja": "三重県",
+   "en": "Mie",
+   "slug": "mie",
+   "healthRatePct": null
+  },
+  {
+   "ja": "滋賀県",
+   "en": "Shiga",
+   "slug": "shiga",
+   "healthRatePct": null
+  },
+  {
+   "ja": "京都府",
+   "en": "Kyoto",
+   "slug": "kyoto",
+   "healthRatePct": null
+  },
+  {
+   "ja": "大阪府",
+   "en": "Osaka",
+   "slug": "osaka",
+   "healthRatePct": 10.13
+  },
+  {
+   "ja": "兵庫県",
+   "en": "Hyogo",
+   "slug": "hyogo",
+   "healthRatePct": null
+  },
+  {
+   "ja": "奈良県",
+   "en": "Nara",
+   "slug": "nara",
+   "healthRatePct": null
+  },
+  {
+   "ja": "和歌山県",
+   "en": "Wakayama",
+   "slug": "wakayama",
+   "healthRatePct": null
+  },
+  {
+   "ja": "鳥取県",
+   "en": "Tottori",
+   "slug": "tottori",
+   "healthRatePct": null
+  },
+  {
+   "ja": "島根県",
+   "en": "Shimane",
+   "slug": "shimane",
+   "healthRatePct": null
+  },
+  {
+   "ja": "岡山県",
+   "en": "Okayama",
+   "slug": "okayama",
+   "healthRatePct": null
+  },
+  {
+   "ja": "広島県",
+   "en": "Hiroshima",
+   "slug": "hiroshima",
+   "healthRatePct": null
+  },
+  {
+   "ja": "山口県",
+   "en": "Yamaguchi",
+   "slug": "yamaguchi",
+   "healthRatePct": null
+  },
+  {
+   "ja": "徳島県",
+   "en": "Tokushima",
+   "slug": "tokushima",
+   "healthRatePct": null
+  },
+  {
+   "ja": "香川県",
+   "en": "Kagawa",
+   "slug": "kagawa",
+   "healthRatePct": null
+  },
+  {
+   "ja": "愛媛県",
+   "en": "Ehime",
+   "slug": "ehime",
+   "healthRatePct": null
+  },
+  {
+   "ja": "高知県",
+   "en": "Kochi",
+   "slug": "kochi",
+   "healthRatePct": null
+  },
+  {
+   "ja": "福岡県",
+   "en": "Fukuoka",
+   "slug": "fukuoka",
+   "healthRatePct": null
+  },
+  {
+   "ja": "佐賀県",
+   "en": "Saga",
+   "slug": "saga",
+   "healthRatePct": 10.55
+  },
+  {
+   "ja": "長崎県",
+   "en": "Nagasaki",
+   "slug": "nagasaki",
+   "healthRatePct": null
+  },
+  {
+   "ja": "熊本県",
+   "en": "Kumamoto",
+   "slug": "kumamoto",
+   "healthRatePct": null
+  },
+  {
+   "ja": "大分県",
+   "en": "Oita",
+   "slug": "oita",
+   "healthRatePct": null
+  },
+  {
+   "ja": "宮崎県",
+   "en": "Miyazaki",
+   "slug": "miyazaki",
+   "healthRatePct": null
+  },
+  {
+   "ja": "鹿児島県",
+   "en": "Kagoshima",
+   "slug": "kagoshima",
+   "healthRatePct": null
+  },
+  {
+   "ja": "沖縄県",
+   "en": "Okinawa",
+   "slug": "okinawa",
+   "healthRatePct": 9.44
+  }
+ ],
+ "careRatePct": 1.62,
+ "careAgeRange": [
+  40,
+  64
+ ],
+ "childSupportRatePct": 0.23,
+ "pensionRatePct": 18.3,
+ "employmentRatePct": {
+  "general": 0.5,
+  "agriculture": 0.6,
+  "construction": 0.6
+ },
+ "grades": {
+  "health": [
+   58000,
+   68000,
+   78000,
+   88000,
+   98000,
+   104000,
+   110000,
+   118000,
+   126000,
+   134000,
+   142000,
+   150000,
+   160000,
+   170000,
+   180000,
+   190000,
+   200000,
+   220000,
+   240000,
+   260000,
+   280000,
+   300000,
+   320000,
+   340000,
+   360000,
+   380000,
+   400000,
+   420000,
+   440000,
+   460000,
+   480000,
+   500000,
+   530000,
+   560000,
+   590000,
+   620000,
+   650000,
+   680000,
+   710000,
+   750000,
+   790000,
+   830000,
+   880000,
+   930000,
+   980000,
+   1030000,
+   1090000,
+   1150000,
+   1210000,
+   1390000
+  ],
+  "pension": [
+   88000,
+   98000,
+   104000,
+   110000,
+   118000,
+   126000,
+   134000,
+   142000,
+   150000,
+   160000,
+   170000,
+   180000,
+   190000,
+   200000,
+   220000,
+   240000,
+   260000,
+   280000,
+   300000,
+   320000,
+   340000,
+   360000,
+   380000,
+   400000,
+   420000,
+   440000,
+   460000,
+   480000,
+   500000,
+   530000,
+   560000,
+   590000,
+   620000,
+   650000
+  ]
+ },
+ "bonusCaps": {
+  "healthCumulativeAnnual": 5730000,
+  "pensionPerPayment": 1500000
+ },
+ "fy2025Reference": {
+  "comment": "Display-only historical values for the on-page last-year table.",
+  "tokyoHealthRatePct": 9.91,
+  "careRatePct": 1.59,
+  "employmentGeneralPct": 0.55
+ }
+}

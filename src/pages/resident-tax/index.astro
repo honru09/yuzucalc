@@ -1,0 +1,45 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ResidentCalc from '../../components/ResidentCalc.astro';
+import Year2Scenario from '../../components/Year2Scenario.astro';
+import validation from '../../data/validation-results.json';
+---
+
+<Layout
+  lang="ja"
+  title="住民税計算機｜前年の年収から年額・月額を計算＋2年目の手取りシミュレーション — ゆずcalc"
+  description="前年の年収から住民税（所得割・均等割・森林環境税・調整控除）を計算。社会人2年目の6月から手取りが減る仕組みもシミュレーションできます。超過課税の市区町村データ収録。"
+  path="/resident-tax/"
+  altPath="/en/resident-tax/"
+>
+  <h1>住民税計算機</h1>
+  <p class="lede">住民税は<strong>前年の所得</strong>に対して課税され、6月から翌年5月まで12回に分けて給与から引かれます（特別徴収）。前年の年収から、今年引かれる住民税の年額と月額を計算します。</p>
+  <p><span class="stamp">標準税率＋超過課税の市区町村データを収録 <span class="ok">公式算例 {validation.passed}/{validation.total} 件で検証済み</span></span></p>
+
+  <ResidentCalc lang="ja" />
+
+  <h2>社会人2年目、手取りが減る理由</h2>
+  <p>新卒1年目は前年の所得がないため住民税が引かれません。2年目の6月、1年目の所得に対する住民税が始まり、月給が同じでも手取りが下がります。昇給と重ならない限り「給料が減った」ように見える現象です。あなたの条件で差額を試算できます。</p>
+  <Year2Scenario lang="ja" />
+
+  <h2>住民税の計算式</h2>
+  <div class="formula">所得割 =（給与所得 − 社会保険料 − 基礎控除43万円 − 扶養等控除）× 10% − 調整控除 ＋ 均等割4,000円 ＋ 森林環境税1,000円</div>
+  <p>所得税との主な違いは、基礎控除が43万円（所得税の令和8年分は最大104万円）と小さいこと、税率が一律10%（原則）であることです。調整控除は所得税と住民税の人的控除の差を調整する仕組みで、この計算機は控除の差額から公式どおりに計算しています（最低2,500円）。月額への分割は「年額 ÷ 12、100円未満切り捨て、端数は6月分に上乗せ」という特別徴収のルールどおりです（検証例：年収480万円・社保72万円→年額¥229,500、月¥19,100×11回＋6月¥19,400）。</p>
+  <h3>市区町村で違う税率（超過課税）</h3>
+  <p>ほとんどの市区町村は標準税率ですが、例外があります。横浜市は所得割10.025%・均等割合計6,200円（みどり税など）、名古屋市は全国唯一の減税（所得割9.7%）、豊岡市は所得割10.1%（市公式の申告の手引きで確認）など。この計算機には公式資料で確認できた市区町村の超過課税を収録し、選択できるようにしています。大阪市は所得割こそ標準ですが、府民税の均等割に令和9年度までの300円加算があり、均等割は市民税3,000円＋府民税1,300円＝4,300円（森林環境税と合わせて5,300円）です。</p>
+
+  <h2>よくある質問</h2>
+  <div class="faq">
+    <details class="acc"><summary>引っ越したら住民税はどうなりますか？</summary><div class="acc-body"><div class="acc-in"><div>その年の1月1日に住んでいた市区町村に、1年分を納めます。年の途中で引っ越しても、納める先は変わりません。</div></div></div></details>
+    <details class="acc"><summary>退職したら残りはどうやって払いますか？</summary><div class="acc-body"><div class="acc-in"><div>残額は一括徴収されるか、普通徴収（自分で納付書払い）に切り替わります。転職先が決まっている場合は、新しい勤務先で特別徴収を継続できることもあります。</div></div></div></details>
+    <details class="acc"><summary>ふるさと納税をすると住民税はどれくらい減りますか？</summary><div class="acc-body"><div class="acc-in"><div>寄附額 − 2,000円が所得税と住民税から分かれて控除されます。自己負担2,000円に収まる上限は、住民税の所得割（調整控除後）の20%が関係します。ふるさと納税の上限計算機は、総務省の一次資料による検証を終えてから公開予定です。</div></div></div></details>
+    <details class="acc"><summary>年収が低いと住民税はかかりませんか？</summary><div class="acc-body"><div class="acc-in"><div>非課税限度額があります。単身では給与所得がおおむね45万円以下で均等割もかかりません。この計算機も限度額の判定を実装しています（市区町村の級地により多少異なります）。</div></div></div></details>
+  </div>
+
+  <h2>関連する計算機</h2>
+  <div class="mesh">
+    <a href="/take-home/">月給の手取り計算</a>
+    <a href="/annual/">年収・年税額の計算</a>
+    <a href="/methodology/">検証と出典</a>
+  </div>
+</Layout>

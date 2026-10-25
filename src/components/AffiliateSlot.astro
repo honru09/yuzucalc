@@ -1,0 +1,16 @@
+---
+interface Props {
+  lang: 'ja' | 'en';
+  title: string;
+  body: string;
+  linkLabel: string;
+}
+const { lang, title, body, linkLabel } = Astro.props;
+---
+
+<aside class="slot" aria-label={lang === 'ja' ? '提携リンク' : 'Partner links'}>
+  <div class="tag">{lang === 'ja' ? '提携リンク（準備中）' : 'Partner links — placeholder'}</div>
+  <h3 style="margin:8px 0 4px">{title}</h3>
+  <p style="margin:0 0 8px">{body}</p>
+  <a href="#" data-placeholder-link aria-disabled="true">{linkLabel}</a>
+</aside>

@@ -1,0 +1,229 @@
+{
+ "generatedAt": "2026-10-25T10:26:05.669Z",
+ "total": 18,
+ "passed": 18,
+ "cases": [
+  {
+   "id": "A4-grade",
+   "label": "A4 grade: ¥355,000 remuneration -> health grade 25 / pension grade 22, amount ¥360,000",
+   "expected": [
+    25,
+    360000,
+    22,
+    360000
+   ],
+   "actual": [
+    25,
+    360000,
+    22,
+    360000
+   ],
+   "pass": true
+  },
+  {
+   "id": "A4",
+   "label": "A4 premiums: health ¥18,234 / health+care ¥21,150 / child ¥414 / pension ¥32,940",
+   "expected": [
+    18234,
+    21150,
+    414,
+    32940
+   ],
+   "actual": [
+    18234,
+    21150,
+    414,
+    32940
+   ],
+   "pass": true
+  },
+  {
+   "id": "A1",
+   "label": "A1 (NTA 設例 inputs, R8 grid): pay ¥374,000, SI ¥58,008, dep 2 -> tax ¥5,310",
+   "expected": 5310,
+   "actual": 5310,
+   "pass": true
+  },
+  {
+   "id": "A1b",
+   "label": "A1b (NTA R8 求め方 example): A ¥356,600, dep 2 -> tax ¥7,020",
+   "expected": 7020,
+   "actual": 7020,
+   "pass": true
+  },
+  {
+   "id": "X1",
+   "label": "X1 (NTA R8 乙欄 example): A ¥80,750 first band -> ¥2,473",
+   "expected": 2473,
+   "actual": 2473,
+   "pass": true
+  },
+  {
+   "id": "A2",
+   "label": "A2 (NTA bonus 設例): after-SI ¥469,404, prior A ¥196,616, dep 2 -> tax ¥9,585, net ¥459,819",
+   "expected": [
+    9585,
+    459819
+   ],
+   "actual": [
+    9585,
+    459819
+   ],
+   "pass": true
+  },
+  {
+   "id": "X2",
+   "label": "X2 (rate-table cross-check): prior A ¥196,616, dep 0 -> 4.084%",
+   "expected": 4.084,
+   "actual": 4.084,
+   "pass": true
+  },
+  {
+   "id": "A3",
+   "label": "A3 (no-prior-month fallback, re-anchored to R8 grid): after-SI ¥788,771, dep 1 -> tax ¥0, net ¥788,771",
+   "expected": [
+    0,
+    788771
+   ],
+   "actual": [
+    0,
+    788771
+   ],
+   "pass": true
+  },
+  {
+   "id": "B1",
+   "label": "B1 Tokyo 35 dep0 ¥340,000: SI ¥49,946 / tax ¥7,610 / net ¥282,444",
+   "expected": [
+    49946,
+    7610,
+    282444
+   ],
+   "actual": [
+    49946,
+    7610,
+    282444
+   ],
+   "pass": true
+  },
+  {
+   "id": "B2",
+   "label": "B2 Tokyo 45 (care) dep2 ¥360,000: SI ¥55,800 / tax ¥4,820 / net ¥299,380",
+   "expected": [
+    55800,
+    4820,
+    299380
+   ],
+   "actual": [
+    55800,
+    4820,
+    299380
+   ],
+   "pass": true
+  },
+  {
+   "id": "B3",
+   "label": "B3 Osaka 30 dep0 ¥355,000: SI ¥53,363 / tax ¥7,930 / net ¥293,707",
+   "expected": [
+    53363,
+    7930,
+    293707
+   ],
+   "actual": [
+    53363,
+    7930,
+    293707
+   ],
+   "pass": true
+  },
+  {
+   "id": "B4",
+   "label": "B4 Saga 50 (care) dep0 ¥345,000: SI ¥53,915 / tax ¥7,610 / net ¥283,475",
+   "expected": [
+    53915,
+    7610,
+    283475
+   ],
+   "actual": [
+    53915,
+    7610,
+    283475
+   ],
+   "pass": true
+  },
+  {
+   "id": "B5",
+   "label": "B5 Aichi 28 dep2 ¥350,000: SI ¥52,978 / tax ¥4,590 / net ¥292,432",
+   "expected": [
+    52978,
+    4590,
+    292432
+   ],
+   "actual": [
+    52978,
+    4590,
+    292432
+   ],
+   "pass": true
+  },
+  {
+   "id": "B6",
+   "label": "B6 Otsu-ran Tokyo 35 ¥340,000: SI ¥49,946 / tax ¥50,000 / net ¥240,054",
+   "expected": [
+    49946,
+    50000,
+    240054
+   ],
+   "actual": [
+    49946,
+    50000,
+    240054
+   ],
+   "pass": true
+  },
+  {
+   "id": "B7",
+   "label": "B7 bonus ¥600,000 Tokyo dep2: SI ¥88,140 / tax ¥10,452 / net ¥501,408",
+   "expected": [
+    88140,
+    10452,
+    501408
+   ],
+   "actual": [
+    88140,
+    10452,
+    501408
+   ],
+   "pass": true
+  },
+  {
+   "id": "B8",
+   "label": "B8 annual R8: salary ¥5,000,000, SI ¥720,000, single -> tax ¥91,800 (expected value corrected: 5% bracket per NTA No.2260)",
+   "expected": 91800,
+   "actual": 91800,
+   "pass": true
+  },
+  {
+   "id": "B9",
+   "label": "B9 annual R7 (regression): same inputs -> tax ¥120,900",
+   "expected": 120900,
+   "actual": 120900,
+   "pass": true
+  },
+  {
+   "id": "B10",
+   "label": "B10 resident tax: prior salary ¥4,800,000, SI ¥700,000 -> annual ¥229,500, ¥19,100 x11 + June ¥19,400",
+   "expected": [
+    229500,
+    19100,
+    19400
+   ],
+   "actual": [
+    229500,
+    19100,
+    19400
+   ],
+   "pass": true
+  }
+ ]
+}

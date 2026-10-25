@@ -1,0 +1,63 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import TakeHomeCalc from '../../components/TakeHomeCalc.astro';
+import { prefectures, monthlyTakeHome, prefectureBySlug } from '../../lib/engine/index.ts';
+import { yen } from '../../lib/ui.ts';
+
+export function getStaticPaths() {
+  return prefectures.map((p) => ({ params: { prefecture: p.slug }, props: { pref: p } }));
+}
+const { pref } = Astro.props;
+const rates = prefectures.filter((p) => p.healthRatePct != null).map((p) => p.healthRatePct as number);
+const allRatesLoaded = rates.length === 47;
+const rank = allRatesLoaded ? [...prefectures].sort((a, b) => (b.healthRatePct ?? 0) - (a.healthRatePct ?? 0)).findIndex((p) => p.slug === pref.slug) + 1 : null;
+const maxRate = Math.max(...rates);
+const minRate = Math.min(...rates);
+
+// Worked example for this prefecture: monthly ¥350,000, age 35, no dependents.
+const ex = monthlyTakeHome({ grossPay: 350000, prefectureSlug: pref.slug, age: 35, dependents: 0, column: 'kou' });
+const exTokyo = monthlyTakeHome({ grossPay: 350000, prefectureSlug: 'tokyo', age: 35, dependents: 0, column: 'kou' });
+const deltaTokyo = ex.net - exTokyo.net;
+---
+
+<Layout
+  lang="ja"
+  title={`${pref.ja}の手取り計算｜健康保険料率${pref.healthRatePct?.toFixed(2)}%（令和8年度）— ゆずcalc`}
+  description={`${pref.ja}の給与手取り計算。協会けんぽ${pref.ja}支部の健康保険料率${pref.healthRatePct?.toFixed(2)}%（令和8年度）で、標準報酬月額・月額表まで公式どおりに計算します。`}
+  path={`/take-home/${pref.slug}/`}
+  altPath={`/en/take-home/${pref.slug}/`}
+>
+  <h1>{pref.ja}の手取り計算</h1>
+  <p class="lede">健康保険料率は都道府県で決まります。{pref.ja}の事業所に勤務する場合、協会けんぽの料率は<strong>{pref.healthRatePct?.toFixed(2)}%</strong>（令和8年度）です。この料率で手取りを計算します。</p>
+  <p>
+    <span class="stamp">健康保険料率 {pref.healthRatePct?.toFixed(2)}%{rank ? ` ・ 全国${rank}位（高い順）` : ''} ・ 全国レンジ {minRate.toFixed(2)}%〜{maxRate.toFixed(2)}%</span>
+  </p>
+
+  <TakeHomeCalc lang="ja" prefectureSlug={pref.slug} />
+
+  <h2>{pref.ja}での計算例（月給35万円・35歳・扶養なし）</h2>
+  <table class="breakdown">
+    <tbody>
+      <tr><td>額面給与</td><td class="v num">{yen(350000)}</td></tr>
+      <tr class="sub"><td>健康保険料（等級36万円 × {pref.healthRatePct?.toFixed(2)}% ÷ 2）</td><td class="v num">−{yen(ex.premiums.health)}</td></tr>
+      <tr class="sub"><td>子ども・子育て支援金</td><td class="v num">−{yen(ex.premiums.childSupport)}</td></tr>
+      <tr class="sub"><td>厚生年金保険料</td><td class="v num">−{yen(ex.premiums.pension)}</td></tr>
+      <tr class="sub"><td>雇用保険料</td><td class="v num">−{yen(ex.premiums.employment)}</td></tr>
+      <tr><td>所得税（月額表・令和8年分）</td><td class="v num">−{yen(ex.incomeTax)}</td></tr>
+      <tr class="total"><td>手取り</td><td class="v num">{yen(ex.net)}</td></tr>
+    </tbody>
+  </table>
+  <p>同じ条件の東京（9.85%）と比べると、{pref.ja}の手取りは月<strong>{deltaTokyo === 0 ? '同額' : `${yen(Math.abs(deltaTokyo))}${deltaTokyo > 0 ? '多い' : '少ない'}`}</strong>です。料率の差は月給が高いほど、また介護保険がかかる40〜64歳で大きくなります。</p>
+  <p class="src">料率の出典：全国健康保険協会「令和8年度の保険料率」（都道府県別料率表）。料率は毎年3月に見直されます。勤務先が健康保険組合に加入している場合は料率が異なります（計算機の手入力欄で変更できます）。</p>
+
+  <h2>都道府県別の手取り一覧</h2>
+  <div class="mesh">
+    {prefectures.map((p) => <a href={`/take-home/${p.slug}/`}>{p.ja}{p.slug === pref.slug ? '（このページ）' : ''}</a>)}
+  </div>
+  <div class="mesh">
+    <a href="/take-home/">手取り計算機トップ</a>
+    <a href="/bonus/">賞与の手取り</a>
+    <a href="/annual/">年収・年税額</a>
+    <a href="/resident-tax/">住民税</a>
+  </div>
+</Layout>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="yuzucalc — the take-home coin: a yuzu that is also a yen coin">
+  <defs>
+    <radialGradient id="yz" cx="38%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#ffdf5e"/>
+      <stop offset="55%" stop-color="#f7b81d"/>
+      <stop offset="100%" stop-color="#eda706"/>
+    </radialGradient>
+  </defs>
+  <!-- leaf -->
+  <path d="M30.6 5.1C33.9 2.2 38.3 1.7 41.6 2.9c-.3 3.9-2.7 7-6.2 7.9-2.9.7-5.1-2-4.8-5.7Z" fill="#3f9153"/>
+  <path d="M31.8 6.4c2.4-1.8 5-2.9 7.9-3.2" stroke="#2c6e3d" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+  <!-- yuzu calyx bump -->
+  <circle cx="23" cy="9.4" r="3.3" fill="#d99a06"/>
+  <!-- coin-fruit body -->
+  <circle cx="23.5" cy="27.5" r="16.5" fill="url(#yz)"/>
+  <circle cx="23.5" cy="27.5" r="16.5" fill="none" stroke="#d99a06" stroke-width="1.4"/>
+  <!-- coin rim -->
+  <circle cx="23.5" cy="27.5" r="12.9" fill="none" stroke="#c07f04" stroke-width="1.4" opacity="0.5"/>
+  <!-- embossed yen -->
+  <g stroke="#7c4d00" stroke-width="3.4" stroke-linecap="round" fill="none">
+    <path d="M17.2 21.6 23.5 28.4 29.8 21.6"/>
+    <path d="M23.5 28.4v8"/>
+    <path d="M18.2 31.1h10.6"/>
+    <path d="M18.2 34.5h10.6"/>
+  </g>
+</svg>

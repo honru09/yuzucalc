@@ -1,0 +1,67 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import TakeHomeCalc from '../../../components/TakeHomeCalc.astro';
+import AffiliateSlot from '../../../components/AffiliateSlot.astro';
+import { prefectures } from '../../../lib/engine/index.ts';
+import validation from '../../../data/validation-results.json';
+---
+
+<Layout
+  lang="en"
+  title="Japan Salary Take-Home Calculator — Exact Payroll Math | yuzucalc"
+  description="Calculate net pay from a Japanese monthly salary using the real rules: prefectural Kyokai Kenpo health rates, standard-remuneration grades, and the NTA monthly withholding table (2026). Validated against official worked examples."
+  path="/en/take-home/"
+  altPath="/take-home/"
+>
+  <h1>Japan salary take-home calculator</h1>
+  <p class="lede">Enter a monthly gross salary and see the take-home pay after social insurance and income tax — computed the way Japanese payroll actually works: prefectural health-insurance rates, standard-remuneration grades, and the National Tax Agency's monthly withholding table.</p>
+  <p>
+    <span class="stamp">Rates: FY2026 (Kyokai Kenpo) · Withholding table: 2026 (Reiwa 8) <span class="ok">Validated on {validation.passed}/{validation.total} official worked examples</span></span>
+  </p>
+
+  <TakeHomeCalc lang="en" />
+
+  <h2>How the calculation works</h2>
+  <div class="formula">Take-home = gross − social insurance (grade-based) − income tax (monthly table) − resident tax</div>
+  <p>The detail most English calculators get wrong: social insurance is <strong>not</strong> a flat percentage of your salary. Premiums are charged on a <em>standard monthly remuneration</em> grade — a salary of ¥355,000 is billed as the ¥360,000 grade. Health rates also vary by prefecture (FY2026: 9.44% in Okinawa to 10.55% in Saga), long-term care insurance (1.62%) applies at ages 40–64, and a child &amp; child-rearing levy (0.23%) was added in April 2026. This calculator implements the official grade table, the official rounding rule (fractions of the employee half-share of ¥0.50 or less are truncated), and the full NTA withholding table — all 231 bands, the high-income formula bands, and the deduction for more than 7 dependents.</p>
+
+  <h2>Checked against official examples</h2>
+  <table class="breakdown">
+    <tbody>
+      <tr><td>Tokyo, age 35, no dependents, ¥340,000/month</td><td class="v num">net ¥282,444</td></tr>
+      <tr><td>Tokyo, age 45 (care insurance), 2 dependents, ¥360,000</td><td class="v num">net ¥299,380</td></tr>
+      <tr><td>Osaka, age 30, ¥355,000 (billed at the ¥360,000 grade)</td><td class="v num">net ¥293,707</td></tr>
+      <tr><td>Otsu-ran (no withholding form), Tokyo, ¥340,000</td><td class="v num">net ¥240,054 (¥50,000 income tax alone)</td></tr>
+    </tbody>
+  </table>
+  <p class="src">The full validation set — inputs, official expected values, and this engine's outputs — is published on the <a href="/en/methodology/">validation &amp; sources page</a>.</p>
+
+  <AffiliateSlot
+    lang="en"
+    title="Moving money or filing across borders?"
+    body="Cross-border salary means remittance and multi-country filing questions. Partner services will be listed here once agreements are in place."
+    linkLabel="International remittance & tax help (partner link — placeholder)"
+  />
+
+  <h2>Take-home pay by prefecture</h2>
+  <p>Health rates are set per prefecture, so the same salary nets differently across Japan. Each prefecture page shows that rate and a worked example.</p>
+  <div class="mesh">
+    {prefectures.map((p) => <a href={`/en/take-home/${p.slug}/`}>{p.en}</a>)}
+  </div>
+
+  <h2>Frequently asked questions</h2>
+  <div class="faq">
+    <details class="acc"><summary>Why is resident tax not deducted by default?</summary><div class="acc-body"><div class="acc-in"><div>Resident tax is levied on <em>last year's</em> income and varies widely. If you know your monthly amount, enter it and it will be reflected. You can estimate it with the <a href="/en/resident-tax/">resident tax calculator</a>. In your first year of work in Japan it is zero — it starts in June of year two.</div></div></div></details>
+    <details class="acc"><summary>Why is Otsu-ran tax so high?</summary><div class="acc-body"><div class="acc-in"><div>Pay without a filed withholding form (typical for a second job) is taxed under the Otsu column — about 6.6× the Ko-ran tax at ¥340,000 in Tokyo. It is settled at year-end adjustment or on your tax return.</div></div></div></details>
+    <details class="acc"><summary>My employer uses a health insurance society (kumiai kenpo), not Kyokai Kenpo.</summary><div class="acc-body"><div class="acc-in"><div>Rates differ by society (major ones run about 9.0–9.5%, vs 9.44–10.55% for Kyokai Kenpo). Enter your society's rate in the manual-rate field.</div></div></div></details>
+    <details class="acc"><summary>Can I share a calculation?</summary><div class="acc-body"><div class="acc-in"><div>Yes — the inputs are encoded in the URL as you type. Send the link and the recipient sees the same result.</div></div></div></details>
+  </div>
+
+  <h2>Related calculators</h2>
+  <div class="mesh">
+    <a href="/en/bonus/">Bonus take-home</a>
+    <a href="/en/annual/">Annual salary & tax</a>
+    <a href="/en/resident-tax/">Resident tax & the year-2 drop</a>
+    <a href="/en/methodology/">Validation & sources</a>
+  </div>
+</Layout>

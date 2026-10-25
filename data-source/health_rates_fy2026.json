@@ -1,0 +1,296 @@
+{
+  "source_url": "https://www.kyoukaikenpo.or.jp/g7/cat330/sb3130/r08/260216/",
+  "source_title": "令和8年度の協会けんぽの保険料率は3月分（4月納付分）から改定されます（協会けんぽ）",
+  "fiscal_year": "FY2026 (令和8年度)",
+  "applies_from": "March 2026 premiums (2026年3月分, 4月納付分); voluntary-continuation and daily-employment special insured: April 2026 premiums",
+  "notes": [
+    "Rates are the total health-insurance rate (employer+employee combined) per prefecture.",
+    "From April 2026 premiums (May payment), a nationwide child/child-rearing support levy (子ども・子育て支援金) of 0.23% is added.",
+    "For insured aged 40-64 (介護保険第2号被保険者), a nationwide long-term-care rate of 1.62% is added on top of the health rate + 0.23%.",
+    "Anchor check: Tokyo 9.85, Hokkaido 10.28, Aichi 9.93, Osaka 10.13, Saga 10.55 all match the brief. Saga 10.55 is the highest. NOTE: Okinawa 9.44 matches, but Okinawa is NOT the lowest in FY2026 - Niigata 9.21 is lower."
+  ],
+  "rates": [
+    {
+      "prefecture_ja": "北海道",
+      "prefecture_en": "Hokkaido",
+      "slug": "hokkaido",
+      "rate_pct": 10.28
+    },
+    {
+      "prefecture_ja": "青森県",
+      "prefecture_en": "Aomori",
+      "slug": "aomori",
+      "rate_pct": 9.85
+    },
+    {
+      "prefecture_ja": "岩手県",
+      "prefecture_en": "Iwate",
+      "slug": "iwate",
+      "rate_pct": 9.51
+    },
+    {
+      "prefecture_ja": "宮城県",
+      "prefecture_en": "Miyagi",
+      "slug": "miyagi",
+      "rate_pct": 10.1
+    },
+    {
+      "prefecture_ja": "秋田県",
+      "prefecture_en": "Akita",
+      "slug": "akita",
+      "rate_pct": 10.01
+    },
+    {
+      "prefecture_ja": "山形県",
+      "prefecture_en": "Yamagata",
+      "slug": "yamagata",
+      "rate_pct": 9.75
+    },
+    {
+      "prefecture_ja": "福島県",
+      "prefecture_en": "Fukushima",
+      "slug": "fukushima",
+      "rate_pct": 9.5
+    },
+    {
+      "prefecture_ja": "茨城県",
+      "prefecture_en": "Ibaraki",
+      "slug": "ibaraki",
+      "rate_pct": 9.52
+    },
+    {
+      "prefecture_ja": "栃木県",
+      "prefecture_en": "Tochigi",
+      "slug": "tochigi",
+      "rate_pct": 9.82
+    },
+    {
+      "prefecture_ja": "群馬県",
+      "prefecture_en": "Gunma",
+      "slug": "gunma",
+      "rate_pct": 9.68
+    },
+    {
+      "prefecture_ja": "埼玉県",
+      "prefecture_en": "Saitama",
+      "slug": "saitama",
+      "rate_pct": 9.67
+    },
+    {
+      "prefecture_ja": "千葉県",
+      "prefecture_en": "Chiba",
+      "slug": "chiba",
+      "rate_pct": 9.73
+    },
+    {
+      "prefecture_ja": "東京都",
+      "prefecture_en": "Tokyo",
+      "slug": "tokyo",
+      "rate_pct": 9.85
+    },
+    {
+      "prefecture_ja": "神奈川県",
+      "prefecture_en": "Kanagawa",
+      "slug": "kanagawa",
+      "rate_pct": 9.92
+    },
+    {
+      "prefecture_ja": "新潟県",
+      "prefecture_en": "Niigata",
+      "slug": "niigata",
+      "rate_pct": 9.21
+    },
+    {
+      "prefecture_ja": "富山県",
+      "prefecture_en": "Toyama",
+      "slug": "toyama",
+      "rate_pct": 9.59
+    },
+    {
+      "prefecture_ja": "石川県",
+      "prefecture_en": "Ishikawa",
+      "slug": "ishikawa",
+      "rate_pct": 9.7
+    },
+    {
+      "prefecture_ja": "福井県",
+      "prefecture_en": "Fukui",
+      "slug": "fukui",
+      "rate_pct": 9.71
+    },
+    {
+      "prefecture_ja": "山梨県",
+      "prefecture_en": "Yamanashi",
+      "slug": "yamanashi",
+      "rate_pct": 9.55
+    },
+    {
+      "prefecture_ja": "長野県",
+      "prefecture_en": "Nagano",
+      "slug": "nagano",
+      "rate_pct": 9.63
+    },
+    {
+      "prefecture_ja": "岐阜県",
+      "prefecture_en": "Gifu",
+      "slug": "gifu",
+      "rate_pct": 9.8
+    },
+    {
+      "prefecture_ja": "静岡県",
+      "prefecture_en": "Shizuoka",
+      "slug": "shizuoka",
+      "rate_pct": 9.61
+    },
+    {
+      "prefecture_ja": "愛知県",
+      "prefecture_en": "Aichi",
+      "slug": "aichi",
+      "rate_pct": 9.93
+    },
+    {
+      "prefecture_ja": "三重県",
+      "prefecture_en": "Mie",
+      "slug": "mie",
+      "rate_pct": 9.77
+    },
+    {
+      "prefecture_ja": "滋賀県",
+      "prefecture_en": "Shiga",
+      "slug": "shiga",
+      "rate_pct": 9.88
+    },
+    {
+      "prefecture_ja": "京都府",
+      "prefecture_en": "Kyoto",
+      "slug": "kyoto",
+      "rate_pct": 9.89
+    },
+    {
+      "prefecture_ja": "大阪府",
+      "prefecture_en": "Osaka",
+      "slug": "osaka",
+      "rate_pct": 10.13
+    },
+    {
+      "prefecture_ja": "兵庫県",
+      "prefecture_en": "Hyogo",
+      "slug": "hyogo",
+      "rate_pct": 10.12
+    },
+    {
+      "prefecture_ja": "奈良県",
+      "prefecture_en": "Nara",
+      "slug": "nara",
+      "rate_pct": 9.91
+    },
+    {
+      "prefecture_ja": "和歌山県",
+      "prefecture_en": "Wakayama",
+      "slug": "wakayama",
+      "rate_pct": 10.06
+    },
+    {
+      "prefecture_ja": "鳥取県",
+      "prefecture_en": "Tottori",
+      "slug": "tottori",
+      "rate_pct": 9.86
+    },
+    {
+      "prefecture_ja": "島根県",
+      "prefecture_en": "Shimane",
+      "slug": "shimane",
+      "rate_pct": 9.94
+    },
+    {
+      "prefecture_ja": "岡山県",
+      "prefecture_en": "Okayama",
+      "slug": "okayama",
+      "rate_pct": 10.05
+    },
+    {
+      "prefecture_ja": "広島県",
+      "prefecture_en": "Hiroshima",
+      "slug": "hiroshima",
+      "rate_pct": 9.78
+    },
+    {
+      "prefecture_ja": "山口県",
+      "prefecture_en": "Yamaguchi",
+      "slug": "yamaguchi",
+      "rate_pct": 10.15
+    },
+    {
+      "prefecture_ja": "徳島県",
+      "prefecture_en": "Tokushima",
+      "slug": "tokushima",
+      "rate_pct": 10.24
+    },
+    {
+      "prefecture_ja": "香川県",
+      "prefecture_en": "Kagawa",
+      "slug": "kagawa",
+      "rate_pct": 10.02
+    },
+    {
+      "prefecture_ja": "愛媛県",
+      "prefecture_en": "Ehime",
+      "slug": "ehime",
+      "rate_pct": 9.98
+    },
+    {
+      "prefecture_ja": "高知県",
+      "prefecture_en": "Kochi",
+      "slug": "kochi",
+      "rate_pct": 10.05
+    },
+    {
+      "prefecture_ja": "福岡県",
+      "prefecture_en": "Fukuoka",
+      "slug": "fukuoka",
+      "rate_pct": 10.11
+    },
+    {
+      "prefecture_ja": "佐賀県",
+      "prefecture_en": "Saga",
+      "slug": "saga",
+      "rate_pct": 10.55
+    },
+    {
+      "prefecture_ja": "長崎県",
+      "prefecture_en": "Nagasaki",
+      "slug": "nagasaki",
+      "rate_pct": 10.06
+    },
+    {
+      "prefecture_ja": "熊本県",
+      "prefecture_en": "Kumamoto",
+      "slug": "kumamoto",
+      "rate_pct": 10.08
+    },
+    {
+      "prefecture_ja": "大分県",
+      "prefecture_en": "Oita",
+      "slug": "oita",
+      "rate_pct": 10.08
+    },
+    {
+      "prefecture_ja": "宮崎県",
+      "prefecture_en": "Miyazaki",
+      "slug": "miyazaki",
+      "rate_pct": 9.77
+    },
+    {
+      "prefecture_ja": "鹿児島県",
+      "prefecture_en": "Kagoshima",
+      "slug": "kagoshima",
+      "rate_pct": 10.13
+    },
+    {
+      "prefecture_ja": "沖縄県",
+      "prefecture_en": "Okinawa",
+      "slug": "okinawa",
+      "rate_pct": 9.44
+    }
+  ]
+}

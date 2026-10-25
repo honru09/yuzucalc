@@ -1,0 +1,57 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import TakeHomeCalc from '../../../components/TakeHomeCalc.astro';
+import { prefectures, monthlyTakeHome } from '../../../lib/engine/index.ts';
+import { yen } from '../../../lib/ui.ts';
+
+export function getStaticPaths() {
+  return prefectures.map((p) => ({ params: { prefecture: p.slug }, props: { pref: p } }));
+}
+const { pref } = Astro.props;
+const rates = prefectures.filter((p) => p.healthRatePct != null).map((p) => p.healthRatePct as number);
+const maxRate = Math.max(...rates);
+const minRate = Math.min(...rates);
+const ex = monthlyTakeHome({ grossPay: 350000, prefectureSlug: pref.slug, age: 35, dependents: 0, column: 'kou' });
+const exTokyo = monthlyTakeHome({ grossPay: 350000, prefectureSlug: 'tokyo', age: 35, dependents: 0, column: 'kou' });
+const deltaTokyo = ex.net - exTokyo.net;
+---
+
+<Layout
+  lang="en"
+  title={`Take-Home Pay in ${pref.en} — Health Rate ${pref.healthRatePct?.toFixed(2)}% (FY2026) | yuzucalc`}
+  description={`Net pay for a salary paid in ${pref.en}, Japan. Kyokai Kenpo health rate ${pref.healthRatePct?.toFixed(2)}% for FY2026, standard-remuneration grades and the NTA withholding table applied exactly.`}
+  path={`/en/take-home/${pref.slug}/`}
+  altPath={`/take-home/${pref.slug}/`}
+>
+  <h1>Take-home pay in {pref.en}</h1>
+  <p class="lede">Health-insurance rates are set by prefecture. If your employer's office is in {pref.en} ({pref.ja}), the Kyokai Kenpo rate is <strong>{pref.healthRatePct?.toFixed(2)}%</strong> for FY2026 (national range {minRate.toFixed(2)}%–{maxRate.toFixed(2)}%).</p>
+  <p><span class="stamp">Health rate {pref.healthRatePct?.toFixed(2)}% · FY2026 · Kyokai Kenpo {pref.en} branch</span></p>
+
+  <TakeHomeCalc lang="en" prefectureSlug={pref.slug} />
+
+  <h2>Worked example — ¥350,000/month, age 35, no dependents, {pref.en}</h2>
+  <table class="breakdown">
+    <tbody>
+      <tr><td>Gross salary</td><td class="v num">{yen(350000)}</td></tr>
+      <tr class="sub"><td>Health insurance (grade ¥360,000 × {pref.healthRatePct?.toFixed(2)}% ÷ 2)</td><td class="v num">−{yen(ex.premiums.health)}</td></tr>
+      <tr class="sub"><td>Child & child-rearing levy</td><td class="v num">−{yen(ex.premiums.childSupport)}</td></tr>
+      <tr class="sub"><td>Employees' pension</td><td class="v num">−{yen(ex.premiums.pension)}</td></tr>
+      <tr class="sub"><td>Employment insurance</td><td class="v num">−{yen(ex.premiums.employment)}</td></tr>
+      <tr><td>Income tax (monthly table, 2026)</td><td class="v num">−{yen(ex.incomeTax)}</td></tr>
+      <tr class="total"><td>Take-home</td><td class="v num">{yen(ex.net)}</td></tr>
+    </tbody>
+  </table>
+  <p>Against the same salary in Tokyo (9.85%), {pref.en} nets <strong>{deltaTokyo === 0 ? 'the same amount' : `${yen(Math.abs(deltaTokyo))} ${deltaTokyo > 0 ? 'more' : 'less'} per month`}</strong>. The gap grows with salary and once long-term care insurance applies (ages 40–64).</p>
+  <p class="src">Rate source: Japan Health Insurance Association (Kyokai Kenpo), FY2026 prefectural rate table. Rates are revised every March. If your employer belongs to a health insurance society, its rate differs — use the manual-rate field.</p>
+
+  <h2>All prefectures</h2>
+  <div class="mesh">
+    {prefectures.map((p) => <a href={`/en/take-home/${p.slug}/`}>{p.en}{p.slug === pref.slug ? ' (this page)' : ''}</a>)}
+  </div>
+  <div class="mesh">
+    <a href="/en/take-home/">Take-home calculator</a>
+    <a href="/en/bonus/">Bonus</a>
+    <a href="/en/annual/">Annual tax</a>
+    <a href="/en/resident-tax/">Resident tax</a>
+  </div>
+</Layout>

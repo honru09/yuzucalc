@@ -1,0 +1,41 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import BonusCalc from '../../../components/BonusCalc.astro';
+import validation from '../../../data/validation-results.json';
+---
+
+<Layout
+  lang="en"
+  title="Japan Bonus Take-Home Calculator — Withholding Rate Table (2026) | yuzucalc"
+  description="Net pay from a Japanese bonus: premiums on the standard bonus base, withholding from the official bonus rate table (2026, all 21 rates), validated against the NTA's worked example."
+  path="/en/bonus/"
+  altPath="/bonus/"
+>
+  <h1>Japan bonus take-home calculator</h1>
+  <p class="lede">Bonus withholding in Japan does not use the monthly table. The rate comes from a separate table keyed by <strong>last month's pay after social insurance</strong> and your dependent count.</p>
+  <p><span class="stamp">Bonus rate table: 2026 (all 21 rates) <span class="ok">Validated on {validation.passed}/{validation.total} official examples</span></span></p>
+
+  <BonusCalc lang="en" />
+
+  <h2>How bonus withholding works</h2>
+  <div class="formula">Bonus income tax = (bonus − bonus premiums) × rate (from last month's taxable pay + dependents)</div>
+  <p>Rates run from 0% to 45.945% in 21 steps. At the same prior-month pay of ¥196,616, the rate is 4.084% with no dependents and 2.042% with two. This calculator carries the full table and is validated on the NTA's own example (bonus ¥554,000, prior-month ¥196,616, 2 dependents → tax ¥9,585).</p>
+  <h3>No prior-month salary?</h3>
+  <p>New hires and similar cases switch to the <strong>monthly-table method</strong>: (bonus − premiums) ÷ 6 (÷ 12 if the bonus basis period exceeds 6 months), looked up in the monthly table, then multiplied back. The calculator switches automatically. The same fallback applies when the bonus exceeds 10× the prior month's pay.</p>
+  <h3>Bonus premiums</h3>
+  <p>Premiums are charged on the standard bonus amount (bonus truncated to ¥1,000): health/care/child levy capped at a cumulative ¥5.73M per year, pension capped at ¥1.5M per payment, employment insurance 0.5% (general) on the full amount. Resident tax is never deducted from a bonus — it is collected from monthly pay.</p>
+
+  <h2>Frequently asked questions</h2>
+  <div class="faq">
+    <details class="acc"><summary>Is the bonus tax "too much"?</summary><div class="acc-body"><div class="acc-in"><div>The rate assumes the bonus repeats monthly, so it often over-withholds. It is settled in the year-end adjustment against your actual annual tax.</div></div></div></details>
+    <details class="acc"><summary>Does overtime last month change my bonus tax?</summary><div class="acc-body"><div class="acc-in"><div>Yes — the rate depends only on last month's taxable pay. A heavy overtime month can push the bonus into a higher rate band (settled at year-end).</div></div></div></details>
+  </div>
+
+  <h2>Related calculators</h2>
+  <div class="mesh">
+    <a href="/en/take-home/">Monthly take-home</a>
+    <a href="/en/annual/">Annual salary & tax</a>
+    <a href="/en/resident-tax/">Resident tax</a>
+    <a href="/en/methodology/">Validation & sources</a>
+  </div>
+</Layout>

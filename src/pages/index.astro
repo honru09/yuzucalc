@@ -1,0 +1,47 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { prefectures } from '../lib/engine/index.ts';
+import validation from '../data/validation-results.json';
+
+const calcs = [
+  { href: '/take-home/', title: '手取り計算', desc: '月給の額面から手取りを、等級・都道府県別料率・月額表で正確に。手取り→額面の逆算もできます。' },
+  { href: '/bonus/', title: '賞与の手取り計算', desc: '算出率の表（令和8年分・全表）で賞与の所得税と手取りを計算します。' },
+  { href: '/annual/', title: '年収・年税額', desc: '年収ベースの所得税（令和8年分・基礎控除104万円対応）と手取り年収、翌年の住民税まで。' },
+  { href: '/resident-tax/', title: '住民税＋2年目の衝撃', desc: '前年の年収から住民税の年額・月額を計算。社会人2年目の手取り減もシミュレーション。' },
+];
+---
+
+<Layout
+  lang="ja"
+  title="ゆずcalc｜日本の給与・税金計算機（公式算例で検証済み）"
+  description="手取り・賞与・年収の所得税・住民税を、国税庁・協会けんぽの一次資料だけで計算。全計算機が公式算例による検証を通過しています。"
+  path="/"
+  altPath="/en/"
+>
+  <h1>日本の給与計算を、<br />一次資料だけで正確に。</h1>
+  <p class="lede">ゆずcalcは、給与の手取り・賞与・年税額・住民税を計算するサイトです。料率はすべて国税庁・協会けんぽ・厚生労働省の公表資料から取り、計算機は公式の設例・算例で検証してから公開しています。</p>
+  <p><span class="stamp">公式算例 <span class="ok">{validation.passed}/{validation.total} 件 PASS</span>（<a href="/methodology/">検証結果を公開中</a>） ・ 料率：令和8年度 / 税額表：令和8年分</span></p>
+
+  <h2>計算機一覧</h2>
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px">
+    {calcs.map((c) => (
+      <a href={c.href} style="text-decoration:none; color:inherit">
+        <div class="card" style="height:100%">
+          <h3 style="margin-top:0">{c.title}</h3>
+          <p style="margin:0; color:var(--ink-soft); font-size:14.5px">{c.desc}</p>
+        </div>
+      </a>
+    ))}
+  </div>
+
+  <h2>このサイトの約束</h2>
+  <p><strong>数字に出典がある。</strong> 健康保険料率は47都道府県ぶんを協会けんぽの料率表から、所得税は国税庁の月額表・算出率の表を全表収録しています。<strong>検証を公開する。</strong> 公式算例の入力・期待値・実際の計算結果を<a href="/methodology/">すべて公開</a>しています。<strong>丸めも公式どおり。</strong> 保険料の折半の端数処理（50銭ルール）まで実装しています。概算でごまかす「給与 × ○%」式の計算はしません。</p>
+
+  <h2>都道府県別の手取り</h2>
+  <p>健康保険料率は都道府県で異なります（令和8年度：9.44%〜10.55%）。勤務先の都道府県ページで、その料率での計算ができます。</p>
+  <div class="mesh">
+    {prefectures.map((p) => <a href={`/take-home/${p.slug}/`}>{p.ja}</a>)}
+  </div>
+
+  <p class="src" style="margin-top:28px">パラメータの版管理：所得税は暦年、社会保険料は年度、源泉徴収税額表は支給日で切り替えます。令和9年1月からの新月額表も収録済みです。最終検証：2026-10-25。</p>
+</Layout>

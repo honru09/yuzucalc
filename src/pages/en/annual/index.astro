@@ -1,0 +1,53 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import AnnualCalc from '../../../components/AnnualCalc.astro';
+import AffiliateSlot from '../../../components/AffiliateSlot.astro';
+import validation from '../../../data/validation-results.json';
+---
+
+<Layout
+  lang="en"
+  title="Japan Annual Salary & Income Tax Calculator (2026 Rules) | yuzucalc"
+  description="Annual take-home and income tax from a Japanese salary: 2026 basic deduction (up to ¥1,040,000), employment-income deduction, social insurance estimate, plus next year's resident tax."
+  path="/en/annual/"
+  altPath="/annual/"
+>
+  <h1>Japan annual salary &amp; income tax calculator</h1>
+  <p class="lede">Build the full year from a monthly salary and bonuses: annual social insurance, employment income, the final income-tax bill, annual take-home — and next year's resident tax on this income.</p>
+  <p><span class="stamp">Income tax: 2026 (Reiwa 8) rules <span class="ok">Validated on {validation.passed}/{validation.total} official examples</span></span></p>
+
+  <AnnualCalc lang="en" />
+
+  <h2>The formula</h2>
+  <div class="formula">Taxable income = salary − employment deduction − social insurance − basic deduction − family deductions → quick table × 1.021</div>
+  <h3>What changed in 2026</h3>
+  <p>The basic deduction rose to <strong>¥1,040,000</strong> for total income up to ¥48.9M (from ¥580,000–950,000 tiered amounts in 2025), and the minimum employment-income deduction became a flat <strong>¥740,000</strong> up to ¥2.2M of salary — the old "40% − ¥100,000" band no longer exists. The increases are settled in the December 2026 year-end adjustment, not in monthly withholding; from January 2027 a new monthly table applies. This engine is parameterised by year and reproduces both years — the pair is a permanent regression test:</p>
+  <table class="breakdown">
+    <tbody>
+      <tr><td>Same case (¥5,000,000 salary, ¥720,000 social insurance, single) — 2026 rules</td><td class="v num">¥91,800</td></tr>
+      <tr><td>Same case — 2025 rules</td><td class="v num">¥120,900</td></tr>
+      <tr><td>Difference</td><td class="v num">¥29,100 less tax</td></tr>
+    </tbody>
+  </table>
+
+  <AffiliateSlot
+    lang="en"
+    title="Comparing a job offer in Japan?"
+    body="Compare offers on take-home, not headline salary — the net-to-gross solver on the monthly calculator helps. Partner services will be listed here once agreements are in place."
+    linkLabel="Job & relocation services (partner link — placeholder)"
+  />
+
+  <h2>Frequently asked questions</h2>
+  <div class="faq">
+    <details class="acc"><summary>Does the annual tax match the sum of monthly withholdings?</summary><div class="acc-body"><div class="acc-in"><div>No. Withholding is a prepayment estimated from the monthly and bonus tables; the difference against this annual figure is settled in the year-end adjustment (nenmatsu chosei) or on a tax return.</div></div></div></details>
+    <details class="acc"><summary>How is annual social insurance estimated?</summary><div class="acc-body"><div class="acc-in"><div>Monthly premiums (grade-based) × 12, plus bonus premiums on the standard bonus base, split across the number of bonus payments you enter.</div></div></div></details>
+  </div>
+
+  <h2>Related calculators</h2>
+  <div class="mesh">
+    <a href="/en/take-home/">Monthly take-home</a>
+    <a href="/en/bonus/">Bonus take-home</a>
+    <a href="/en/resident-tax/">Resident tax & the year-2 drop</a>
+    <a href="/en/methodology/">Validation & sources</a>
+  </div>
+</Layout>

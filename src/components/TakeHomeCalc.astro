@@ -1,0 +1,272 @@
+---
+import { monthlyTakeHome, prefectures, prefectureBySlug } from '../lib/engine/index.ts';
+import { yen, num } from '../lib/ui.ts';
+
+interface Props {
+  lang: 'ja' | 'en';
+  prefectureSlug?: string;
+}
+const { lang, prefectureSlug = 'tokyo' } = Astro.props;
+const ja = lang === 'ja';
+
+const t = ja
+  ? {
+      mode: '計算の向き',
+      modeG2N: '額面 → 手取り',
+      modeN2G: '手取り → 額面（逆算）',
+      gross: '月給（額面）',
+      targetNet: '目標の手取り（月額）',
+      prefecture: '勤務先の都道府県（健康保険料率）',
+      age: '年齢',
+      dependents: '扶養親族等の数',
+      column: '源泉徴収の欄',
+      kou: '甲欄（扶養控除等申告書を提出）',
+      otsu: '乙欄（提出なし・副業など）',
+      residentTax: '住民税の月額（任意・前年の所得で決まります）',
+      override: '健康保険料率を手入力する（組合健保など）',
+      overrideLabel: '健康保険料率（合計・％）',
+      solvedGross: '必要な額面',
+      resultTitle: '計算結果',
+      net: '手取り',
+      perMonth: '月額',
+      annual: '年間の手取り目安（×12）',
+      rows: {
+        gross: '額面給与',
+        health: '健康保険料',
+        child: '子ども・子育て支援金',
+        pension: '厚生年金保険料',
+        employment: '雇用保険料',
+        siTotal: '社会保険料 合計',
+        tax: '所得税（源泉徴収）',
+        resident: '住民税',
+        net: '手取り',
+      },
+      gradeNote: (g: number, amt: number) => `標準報酬月額 第${g}級 ¥${num(amt)}`,
+      rateNote: (r: number) => `料率 ${r.toFixed(2)}%（介護保険含む場合は合算）`,
+      yenUnit: '円',
+    }
+  : {
+      mode: 'Direction',
+      modeG2N: 'Gross → Net',
+      modeN2G: 'Net → Gross (solve)',
+      gross: 'Monthly gross salary',
+      targetNet: 'Target monthly take-home',
+      prefecture: 'Prefecture of employer (health rate)',
+      age: 'Age',
+      dependents: 'Dependents (for withholding)',
+      column: 'Withholding column',
+      kou: 'Ko-ran (withholding form filed)',
+      otsu: 'Otsu-ran (no form / second job)',
+      residentTax: 'Monthly resident tax (optional; set by last year\u2019s income)',
+      override: 'Enter the health rate manually (union health society, etc.)',
+      overrideLabel: 'Health rate, total (%)',
+      solvedGross: 'Gross required',
+      resultTitle: 'Result',
+      net: 'Take-home pay',
+      perMonth: 'per month',
+      annual: 'Annual take-home estimate (x12)',
+      rows: {
+        gross: 'Gross salary',
+        health: 'Health insurance',
+        child: 'Child & child-rearing levy',
+        pension: 'Employees\u2019 pension',
+        employment: 'Employment insurance',
+        siTotal: 'Social insurance total',
+        tax: 'Income tax (withheld)',
+        resident: 'Resident tax',
+        net: 'Take-home pay',
+      },
+      gradeNote: (g: number, amt: number) => `standard remuneration grade ${g}, ¥${num(amt)}`,
+      rateNote: (r: number) => `rate ${r.toFixed(2)}% (incl. long-term care where it applies)`,
+      yenUnit: 'yen',
+    };
+
+// Pre-rendered default result (Copy #2: a complete worked result before any
+// interaction). Defaults mirror validation case B1 for Tokyo.
+const defaults = { grossPay: 340000, age: 35, dependents: 0 };
+const def = monthlyTakeHome({
+  grossPay: defaults.grossPay,
+  prefectureSlug,
+  age: defaults.age,
+  dependents: defaults.dependents,
+  column: 'kou',
+});
+const prefOptions = prefectures;
+---
+
+<div class="grid2">
+  <div class="card">
+    <form class="calc" id="tc-form">
+      <label>{t.mode}
+        <select name="mode">
+          <option value="g2n">{t.modeG2N}</option>
+          <option value="n2g">{t.modeN2G}</option>
+        </select>
+      </label>
+      <label class="unit" data-unit={ja ? '円' : 'JPY'} data-gross-wrap>{t.gross}
+        <input name="gross" type="number" inputmode="numeric" min="0" step="1000" value={defaults.grossPay} />
+      </label>
+      <label class="unit" data-unit={ja ? '円' : 'JPY'} data-net-wrap hidden>{t.targetNet}
+        <input name="targetNet" type="number" inputmode="numeric" min="0" step="1000" value={def.net} />
+      </label>
+      <label>{t.prefecture}
+        <select name="prefecture">
+          {prefOptions.map((p) => (
+            <option value={p.slug} selected={p.slug === prefectureSlug}>
+              {ja ? p.ja : p.en}{p.healthRatePct != null ? ` — ${p.healthRatePct.toFixed(2)}%` : ''}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label>{t.age}
+        <input name="age" type="number" inputmode="numeric" min="16" max="100" value={defaults.age} />
+      </label>
+      <label>{t.dependents}
+        <input name="dependents" type="number" inputmode="numeric" min="0" max="15" value={defaults.dependents} />
+      </label>
+      <label>{t.column}
+        <select name="column">
+          <option value="kou">{t.kou}</option>
+          <option value="otsu">{t.otsu}</option>
+        </select>
+      </label>
+      <label class="unit" data-unit={ja ? '円' : 'JPY'}>{t.residentTax}
+        <input name="residentTax" type="number" inputmode="numeric" min="0" step="100" placeholder="0" />
+      </label>
+      <label class="unit" data-unit="%">{t.overrideLabel}
+        <input name="override" type="number" inputmode="decimal" min="0" max="20" step="0.01" placeholder={prefectureBySlug(prefectureSlug).healthRatePct?.toFixed(2) ?? ''} />
+      </label>
+    </form>
+    <p class="src" style="margin-top:14px">
+      {ja
+        ? '健康保険は協会けんぽの都道府県別料率（令和8年度）で計算します。組合健保の方は料率を手入力してください。介護保険は40〜64歳に自動で加算されます。'
+        : 'Health premiums use the Kyokai Kenpo prefectural rates for FY2026. If you belong to a union health society, enter its rate manually. Long-term care insurance is added automatically for ages 40-64.'}
+    </p>
+  </div>
+
+  <div class="card result" id="tc-result" aria-live="polite">
+    <div class="result-head">
+      <div class="src" style="font-weight:700; letter-spacing:.06em">{t.resultTitle}</div>
+      <button type="button" class="btn ghost noprint" onclick="window.print()">{ja ? '結果を印刷' : 'Print result'}</button>
+    </div>
+    <div class="net-big"><span data-v="net">{yen(def.net)}</span> <span class="unit">/ {t.perMonth}</span></div>
+    <div class="src" style="margin-bottom:10px">
+      <span data-v="grossLabel">{t.rows.gross}</span> <span class="num" data-v="grossEcho">{yen(defaults.grossPay)}</span>
+      <span data-v="solvedWrap" hidden>（{t.solvedGross}）</span>
+      · {t.annual} <span class="num" data-v="annualNet">{yen(def.annualNetEstimate)}</span>
+    </div>
+    <table class="breakdown">
+      <tbody>
+        <tr><td>{t.rows.gross}</td><td class="v num" data-v="gross">{yen(defaults.grossPay)}</td></tr>
+        <tr class="sub"><td>{t.rows.health}<br /><span class="src" data-v="healthNote">{t.gradeNote(def.premiums.healthGrade.grade, def.premiums.healthGrade.amount)} · {t.rateNote(def.premiums.healthRatePct)}</span></td><td class="v num" data-v="health">−{yen(def.premiums.health)}</td></tr>
+        <tr class="sub"><td>{t.rows.child}</td><td class="v num" data-v="child">−{yen(def.premiums.childSupport)}</td></tr>
+        <tr class="sub"><td>{t.rows.pension}<br /><span class="src" data-v="pensionNote">{t.gradeNote(def.premiums.pensionGrade.grade, def.premiums.pensionGrade.amount)}</span></td><td class="v num" data-v="pension">−{yen(def.premiums.pension)}</td></tr>
+        <tr class="sub"><td>{t.rows.employment}</td><td class="v num" data-v="employment">−{yen(def.premiums.employment)}</td></tr>
+        <tr><td>{t.rows.siTotal}</td><td class="v num" data-v="siTotal">−{yen(def.premiums.total)}</td></tr>
+        <tr><td>{t.rows.tax}<br /><span class="src" data-v="taxNote">{ja ? '月額表（令和8年分）' : 'Monthly withholding table, 2026 (Reiwa 8)'}</span></td><td class="v num" data-v="tax">−{yen(def.incomeTax)}</td></tr>
+        <tr data-v="residentRow" hidden><td>{t.rows.resident}</td><td class="v num" data-v="resident">−{yen(0)}</td></tr>
+        <tr class="total"><td>{t.rows.net}</td><td class="v num" data-v="net2">{yen(def.net)}</td></tr>
+      </tbody>
+    </table>
+    <div class="stack" aria-hidden="true">
+      <span class="s-si" data-bar="si" style={`width:${(def.premiums.total / defaults.grossPay) * 100}%`}></span>
+      <span class="s-tax" data-bar="tax" style={`width:${(def.incomeTax / defaults.grossPay) * 100}%`}></span>
+      <span class="s-res" data-bar="res" style="width:0%"></span>
+      <span class="s-net" data-bar="net" style={`width:${(def.net / defaults.grossPay) * 100}%`}></span>
+    </div>
+    <div class="legend" aria-hidden="true">
+      <span><i style="background:var(--accent)"></i>{ja ? '社会保険料' : 'Social insurance'}</span>
+      <span><i style="background:var(--tax)"></i>{ja ? '所得税' : 'Income tax'}</span>
+      <span><i style="background:var(--mut)"></i>{ja ? '住民税' : 'Resident tax'}</span>
+      <span><i style="background:var(--good)"></i>{t.rows.net}</span>
+    </div>
+  </div>
+</div>
+<div class="sticky-net" aria-hidden="true">
+  <span>{t.net}<span class="lbl">/ {t.perMonth}</span></span>
+  <strong data-sticky>{yen(def.net)}</strong>
+</div>
+
+<script>
+  import { monthlyTakeHome, solveGrossForNet } from '../lib/engine/index.ts';
+  import { yen, num, setText, queryParams, syncQuery, field, fieldNum, countUpYen, flash } from '../lib/ui.ts';
+
+  const form = document.getElementById('tc-form') as HTMLFormElement;
+  const result = document.getElementById('tc-result') as HTMLElement;
+  const jaPage = document.documentElement.lang === 'ja';
+
+  function applyQuery() {
+    const q = queryParams();
+    const map: Record<string, string> = {
+      mode: 'mode', pay: 'gross', net: 'targetNet', pref: 'prefecture', age: 'age',
+      dep: 'dependents', col: 'column', rt: 'residentTax', hr: 'override',
+    };
+    for (const [k, name] of Object.entries(map)) {
+      if (q[k] != null) field(form, name).value = q[k];
+    }
+  }
+
+  function compute() {
+    const mode = field(form, 'mode').value;
+    const prefecture = field(form, 'prefecture').value;
+    const age = Math.min(100, Math.max(16, fieldNum(form, 'age', 35)));
+    const dependents = Math.min(15, Math.max(0, Math.floor(fieldNum(form, 'dependents', 0))));
+    const column = field(form, 'column').value as 'kou' | 'otsu';
+    const residentTax = Math.max(0, fieldNum(form, 'residentTax', 0));
+    const overrideRaw = field(form, 'override').value;
+    const override = overrideRaw === '' ? null : parseFloat(overrideRaw);
+
+    const grossWrap = form.querySelector('[data-gross-wrap]') as HTMLElement;
+    const netWrap = form.querySelector('[data-net-wrap]') as HTMLElement;
+    let gross = Math.max(0, fieldNum(form, 'gross', 0));
+    if (mode === 'n2g') {
+      grossWrap.hidden = true; netWrap.hidden = false;
+      const target = Math.max(0, fieldNum(form, 'targetNet', 0));
+      gross = solveGrossForNet(target, { prefectureSlug: prefecture, age, dependents, column, residentTaxMonthly: residentTax, healthRateOverridePct: override });
+    } else {
+      grossWrap.hidden = false; netWrap.hidden = true;
+    }
+    const r = monthlyTakeHome({ grossPay: gross, prefectureSlug: prefecture, age, dependents, column, residentTaxMonthly: residentTax, healthRateOverridePct: override });
+    countUpYen(result.querySelector('[data-v="net"]'), r.net);
+    setText(result, 'net2', yen(r.net));
+    setText(result, 'annualNet', yen(r.annualNetEstimate));
+    setText(result, 'gross', yen(gross));
+    setText(result, 'grossEcho', yen(gross));
+    (result.querySelector('[data-v="solvedWrap"]') as HTMLElement).hidden = mode !== 'n2g';
+    setText(result, 'health', '−' + yen(r.premiums.health));
+    setText(result, 'healthNote', jaPage
+      ? `標準報酬月額 第${r.premiums.healthGrade.grade}級 ¥${num(r.premiums.healthGrade.amount)} · 料率 ${r.premiums.healthRatePct.toFixed(2)}%`
+      : `standard remuneration grade ${r.premiums.healthGrade.grade}, ¥${num(r.premiums.healthGrade.amount)} · rate ${r.premiums.healthRatePct.toFixed(2)}%`);
+    setText(result, 'child', '−' + yen(r.premiums.childSupport));
+    setText(result, 'pension', '−' + yen(r.premiums.pension));
+    setText(result, 'pensionNote', jaPage
+      ? `標準報酬月額 第${r.premiums.pensionGrade.grade}級 ¥${num(r.premiums.pensionGrade.amount)}`
+      : `standard remuneration grade ${r.premiums.pensionGrade.grade}, ¥${num(r.premiums.pensionGrade.amount)}`);
+    setText(result, 'employment', '−' + yen(r.premiums.employment));
+    setText(result, 'siTotal', '−' + yen(r.premiums.total));
+    setText(result, 'tax', '−' + yen(r.incomeTax));
+    const rrow = result.querySelector('[data-v="residentRow"]') as HTMLElement;
+    rrow.hidden = residentTax <= 0;
+    setText(result, 'resident', '−' + yen(residentTax));
+    const bar = (k: string, v: number) => {
+      const s = result.querySelector(`[data-bar="${k}"]`) as HTMLElement | null;
+      if (s) s.style.width = (gross > 0 ? (v / gross) * 100 : 0) + '%';
+    };
+    bar('si', r.premiums.total); bar('tax', r.incomeTax); bar('res', residentTax); bar('net', r.net);
+    const sticky = document.querySelector('[data-sticky]');
+    if (sticky) sticky.textContent = yen(r.net);
+    syncQuery({
+      mode: mode === 'n2g' ? 'n2g' : null,
+      pay: mode === 'g2n' ? gross : null,
+      net: mode === 'n2g' ? fieldNum(form, 'targetNet', 0) : null,
+      pref: prefecture, age, dep: dependents, col: column === 'otsu' ? 'otsu' : null,
+      rt: residentTax > 0 ? residentTax : null, hr: override,
+    });
+  }
+
+  applyQuery();
+  form.addEventListener('input', compute);
+  form.addEventListener('change', compute);
+  form.addEventListener('change', () => flash(result));
+  compute();
+</script>

@@ -1,0 +1,47 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { prefectures } from '../../lib/engine/index.ts';
+import validation from '../../data/validation-results.json';
+
+const calcs = [
+  { href: '/en/take-home/', title: 'Take-Home Pay', desc: 'Monthly net pay with grades, prefectural health rates and the NTA withholding table. Net-to-gross solving included.' },
+  { href: '/en/bonus/', title: 'Bonus Take-Home', desc: 'Bonus withholding from the official rate table (2026, all 21 rates), including the no-prior-month fallback.' },
+  { href: '/en/annual/', title: 'Annual Salary & Tax', desc: 'Annual income tax under the 2026 rules (¥1,040,000 basic deduction), annual take-home, and next year\u2019s resident tax.' },
+  { href: '/en/resident-tax/', title: 'Resident Tax & Year 2', desc: 'Resident tax from last year\u2019s salary — and the famous year-2 pay drop, simulated with your numbers.' },
+];
+---
+
+<Layout
+  lang="en"
+  title="yuzucalc — Japan Payroll Calculators, Validated Against Official Examples"
+  description="Take-home pay, bonuses, annual income tax and resident tax for Japan — computed only from primary sources (NTA, Kyokai Kenpo, MHLW) and validated against official worked examples."
+  path="/en/"
+  altPath="/"
+>
+  <h1>Japan payroll math,<br />from primary sources only.</h1>
+  <p class="lede">yuzucalc computes take-home pay, bonuses, annual income tax and resident tax for salaries in Japan. Every rate comes from an official publication — the National Tax Agency, the Japan Health Insurance Association, the MHLW — and every calculator is validated against official worked examples before it goes live.</p>
+  <p><span class="stamp"><span class="ok">{validation.passed}/{validation.total} official examples PASS</span> (<a href="/en/methodology/">see the published validation set</a>) · Rates: FY2026 / Tables: 2026</span></p>
+
+  <h2>Calculators</h2>
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px">
+    {calcs.map((c) => (
+      <a href={c.href} style="text-decoration:none; color:inherit">
+        <div class="card" style="height:100%">
+          <h3 style="margin-top:0">{c.title}</h3>
+          <p style="margin:0; color:var(--ink-soft); font-size:14.5px">{c.desc}</p>
+        </div>
+      </a>
+    ))}
+  </div>
+
+  <h2>What makes this different</h2>
+  <p><strong>Every number has a citation.</strong> Health rates for all 47 prefectures come from the Kyokai Kenpo table; withholding uses the NTA's full monthly and bonus tables, not an approximation. <strong>The validation is public.</strong> Inputs, official expected values and the engine's actual outputs are <a href="/en/methodology/">published in full</a>. <strong>Even the rounding is official</strong> — the ¥0.50 half-share rule is implemented, not approximated. No "salary × a percentage" shortcuts.</p>
+
+  <h2>Take-home pay by prefecture</h2>
+  <p>Health rates differ by prefecture (FY2026: 9.44%–10.55%). Each prefecture page runs the calculator at that rate with a worked example.</p>
+  <div class="mesh">
+    {prefectures.map((p) => <a href={`/en/take-home/${p.slug}/`}>{p.en}</a>)}
+  </div>
+
+  <p class="src" style="margin-top:28px">Parameters are versioned by calendar year (income tax), fiscal year (premiums) and payment date (withholding tables — the January 2027 table is already loaded). Last verified: 2026-10-25.</p>
+</Layout>

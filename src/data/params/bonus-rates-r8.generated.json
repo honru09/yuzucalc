@@ -1,0 +1,820 @@
+{
+ "version": "r8",
+ "label": "令和8年分",
+ "rows": [
+  {
+   "ratePct": 0,
+   "kou": [
+    {
+     "fromK": null,
+     "toK": 82
+    },
+    {
+     "fromK": null,
+     "toK": 107
+    },
+    {
+     "fromK": null,
+     "toK": 143
+    },
+    {
+     "fromK": null,
+     "toK": 181
+    },
+    {
+     "fromK": null,
+     "toK": 218
+    },
+    {
+     "fromK": null,
+     "toK": 251
+    },
+    {
+     "fromK": null,
+     "toK": 284
+    },
+    {
+     "fromK": null,
+     "toK": 317
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 2.042,
+   "kou": [
+    {
+     "fromK": 82,
+     "toK": 94
+    },
+    {
+     "fromK": 107,
+     "toK": 250
+    },
+    {
+     "fromK": 143,
+     "toK": 276
+    },
+    {
+     "fromK": 181,
+     "toK": 300
+    },
+    {
+     "fromK": 218,
+     "toK": 300
+    },
+    {
+     "fromK": 251,
+     "toK": 304
+    },
+    {
+     "fromK": 284,
+     "toK": 343
+    },
+    {
+     "fromK": 317,
+     "toK": 383
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 4.084,
+   "kou": [
+    {
+     "fromK": 94,
+     "toK": 260
+    },
+    {
+     "fromK": 250,
+     "toK": 289
+    },
+    {
+     "fromK": 276,
+     "toK": 321
+    },
+    {
+     "fromK": 300,
+     "toK": 354
+    },
+    {
+     "fromK": 300,
+     "toK": 387
+    },
+    {
+     "fromK": 304,
+     "toK": 412
+    },
+    {
+     "fromK": 343,
+     "toK": 438
+    },
+    {
+     "fromK": 383,
+     "toK": 463
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 6.126,
+   "kou": [
+    {
+     "fromK": 260,
+     "toK": 309
+    },
+    {
+     "fromK": 289,
+     "toK": 346
+    },
+    {
+     "fromK": 321,
+     "toK": 377
+    },
+    {
+     "fromK": 354,
+     "toK": 405
+    },
+    {
+     "fromK": 387,
+     "toK": 431
+    },
+    {
+     "fromK": 412,
+     "toK": 457
+    },
+    {
+     "fromK": 438,
+     "toK": 483
+    },
+    {
+     "fromK": 463,
+     "toK": 508
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 8.168,
+   "kou": [
+    {
+     "fromK": 309,
+     "toK": 342
+    },
+    {
+     "fromK": 346,
+     "toK": 373
+    },
+    {
+     "fromK": 377,
+     "toK": 400
+    },
+    {
+     "fromK": 405,
+     "toK": 424
+    },
+    {
+     "fromK": 431,
+     "toK": 452
+    },
+    {
+     "fromK": 457,
+     "toK": 479
+    },
+    {
+     "fromK": 483,
+     "toK": 505
+    },
+    {
+     "fromK": 508,
+     "toK": 529
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 10.21,
+   "kou": [
+    {
+     "fromK": 342,
+     "toK": 372
+    },
+    {
+     "fromK": 373,
+     "toK": 401
+    },
+    {
+     "fromK": 400,
+     "toK": 426
+    },
+    {
+     "fromK": 424,
+     "toK": 452
+    },
+    {
+     "fromK": 452,
+     "toK": 477
+    },
+    {
+     "fromK": 479,
+     "toK": 503
+    },
+    {
+     "fromK": 505,
+     "toK": 527
+    },
+    {
+     "fromK": 529,
+     "toK": 552
+    }
+   ],
+   "otsu": {
+    "fromK": null,
+    "toK": 224
+   }
+  },
+  {
+   "ratePct": 12.252,
+   "kou": [
+    {
+     "fromK": 372,
+     "toK": 402
+    },
+    {
+     "fromK": 401,
+     "toK": 430
+    },
+    {
+     "fromK": 426,
+     "toK": 457
+    },
+    {
+     "fromK": 452,
+     "toK": 484
+    },
+    {
+     "fromK": 477,
+     "toK": 509
+    },
+    {
+     "fromK": 503,
+     "toK": 531
+    },
+    {
+     "fromK": 527,
+     "toK": 553
+    },
+    {
+     "fromK": 552,
+     "toK": 578
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 14.294,
+   "kou": [
+    {
+     "fromK": 402,
+     "toK": 433
+    },
+    {
+     "fromK": 430,
+     "toK": 463
+    },
+    {
+     "fromK": 457,
+     "toK": 492
+    },
+    {
+     "fromK": 484,
+     "toK": 517
+    },
+    {
+     "fromK": 509,
+     "toK": 540
+    },
+    {
+     "fromK": 531,
+     "toK": 564
+    },
+    {
+     "fromK": 553,
+     "toK": 589
+    },
+    {
+     "fromK": 578,
+     "toK": 614
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 16.336,
+   "kou": [
+    {
+     "fromK": 433,
+     "toK": 520
+    },
+    {
+     "fromK": 463,
+     "toK": 520
+    },
+    {
+     "fromK": 492,
+     "toK": 525
+    },
+    {
+     "fromK": 517,
+     "toK": 550
+    },
+    {
+     "fromK": 540,
+     "toK": 577
+    },
+    {
+     "fromK": 564,
+     "toK": 604
+    },
+    {
+     "fromK": 589,
+     "toK": 630
+    },
+    {
+     "fromK": 614,
+     "toK": 657
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 18.378,
+   "kou": [
+    {
+     "fromK": 520,
+     "toK": 605
+    },
+    {
+     "fromK": 520,
+     "toK": 621
+    },
+    {
+     "fromK": 525,
+     "toK": 636
+    },
+    {
+     "fromK": 550,
+     "toK": 651
+    },
+    {
+     "fromK": 577,
+     "toK": 666
+    },
+    {
+     "fromK": 604,
+     "toK": 681
+    },
+    {
+     "fromK": 630,
+     "toK": 697
+    },
+    {
+     "fromK": 657,
+     "toK": 708
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 20.42,
+   "kou": [
+    {
+     "fromK": 605,
+     "toK": 684
+    },
+    {
+     "fromK": 621,
+     "toK": 705
+    },
+    {
+     "fromK": 636,
+     "toK": 728
+    },
+    {
+     "fromK": 651,
+     "toK": 751
+    },
+    {
+     "fromK": 666,
+     "toK": 774
+    },
+    {
+     "fromK": 681,
+     "toK": 798
+    },
+    {
+     "fromK": 697,
+     "toK": 821
+    },
+    {
+     "fromK": 708,
+     "toK": 845
+    }
+   ],
+   "otsu": {
+    "fromK": 224,
+    "toK": 295
+   }
+  },
+  {
+   "ratePct": 22.462,
+   "kou": [
+    {
+     "fromK": 684,
+     "toK": 715
+    },
+    {
+     "fromK": 705,
+     "toK": 739
+    },
+    {
+     "fromK": 728,
+     "toK": 764
+    },
+    {
+     "fromK": 751,
+     "toK": 788
+    },
+    {
+     "fromK": 774,
+     "toK": 813
+    },
+    {
+     "fromK": 798,
+     "toK": 838
+    },
+    {
+     "fromK": 821,
+     "toK": 862
+    },
+    {
+     "fromK": 845,
+     "toK": 887
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 24.504,
+   "kou": [
+    {
+     "fromK": 715,
+     "toK": 752
+    },
+    {
+     "fromK": 739,
+     "toK": 778
+    },
+    {
+     "fromK": 764,
+     "toK": 804
+    },
+    {
+     "fromK": 788,
+     "toK": 830
+    },
+    {
+     "fromK": 813,
+     "toK": 856
+    },
+    {
+     "fromK": 838,
+     "toK": 881
+    },
+    {
+     "fromK": 862,
+     "toK": 907
+    },
+    {
+     "fromK": 887,
+     "toK": 933
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 26.546,
+   "kou": [
+    {
+     "fromK": 752,
+     "toK": 795
+    },
+    {
+     "fromK": 778,
+     "toK": 821
+    },
+    {
+     "fromK": 804,
+     "toK": 848
+    },
+    {
+     "fromK": 830,
+     "toK": 876
+    },
+    {
+     "fromK": 856,
+     "toK": 903
+    },
+    {
+     "fromK": 881,
+     "toK": 930
+    },
+    {
+     "fromK": 907,
+     "toK": 957
+    },
+    {
+     "fromK": 933,
+     "toK": 985
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 28.588,
+   "kou": [
+    {
+     "fromK": 795,
+     "toK": 854
+    },
+    {
+     "fromK": 821,
+     "toK": 882
+    },
+    {
+     "fromK": 848,
+     "toK": 910
+    },
+    {
+     "fromK": 876,
+     "toK": 938
+    },
+    {
+     "fromK": 903,
+     "toK": 966
+    },
+    {
+     "fromK": 930,
+     "toK": 994
+    },
+    {
+     "fromK": 957,
+     "toK": 1022
+    },
+    {
+     "fromK": 985,
+     "toK": 1051
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 30.63,
+   "kou": [
+    {
+     "fromK": 854,
+     "toK": 922
+    },
+    {
+     "fromK": 882,
+     "toK": 952
+    },
+    {
+     "fromK": 910,
+     "toK": 983
+    },
+    {
+     "fromK": 938,
+     "toK": 1013
+    },
+    {
+     "fromK": 966,
+     "toK": 1044
+    },
+    {
+     "fromK": 994,
+     "toK": 1074
+    },
+    {
+     "fromK": 1022,
+     "toK": 1104
+    },
+    {
+     "fromK": 1051,
+     "toK": 1135
+    }
+   ],
+   "otsu": {
+    "fromK": 295,
+    "toK": 527
+   }
+  },
+  {
+   "ratePct": 32.672,
+   "kou": [
+    {
+     "fromK": 922,
+     "toK": 1318
+    },
+    {
+     "fromK": 952,
+     "toK": 1342
+    },
+    {
+     "fromK": 983,
+     "toK": 1367
+    },
+    {
+     "fromK": 1013,
+     "toK": 1391
+    },
+    {
+     "fromK": 1044,
+     "toK": 1416
+    },
+    {
+     "fromK": 1074,
+     "toK": 1440
+    },
+    {
+     "fromK": 1104,
+     "toK": 1464
+    },
+    {
+     "fromK": 1135,
+     "toK": 1489
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 35.735,
+   "kou": [
+    {
+     "fromK": 1318,
+     "toK": 1521
+    },
+    {
+     "fromK": 1342,
+     "toK": 1526
+    },
+    {
+     "fromK": 1367,
+     "toK": 1526
+    },
+    {
+     "fromK": 1391,
+     "toK": 1538
+    },
+    {
+     "fromK": 1416,
+     "toK": 1555
+    },
+    {
+     "fromK": 1440,
+     "toK": 1555
+    },
+    {
+     "fromK": 1464,
+     "toK": 1555
+    },
+    {
+     "fromK": 1489,
+     "toK": 1583
+    }
+   ],
+   "otsu": {
+    "fromK": 527,
+    "toK": 1118
+   }
+  },
+  {
+   "ratePct": 38.798,
+   "kou": [
+    {
+     "fromK": 1521,
+     "toK": 2621
+    },
+    {
+     "fromK": 1526,
+     "toK": 2645
+    },
+    {
+     "fromK": 1526,
+     "toK": 2669
+    },
+    {
+     "fromK": 1538,
+     "toK": 2693
+    },
+    {
+     "fromK": 1555,
+     "toK": 2716
+    },
+    {
+     "fromK": 1555,
+     "toK": 2740
+    },
+    {
+     "fromK": 1555,
+     "toK": 2764
+    },
+    {
+     "fromK": 1583,
+     "toK": 2788
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 41.861,
+   "kou": [
+    {
+     "fromK": 2621,
+     "toK": 3495
+    },
+    {
+     "fromK": 2645,
+     "toK": 3527
+    },
+    {
+     "fromK": 2669,
+     "toK": 3559
+    },
+    {
+     "fromK": 2693,
+     "toK": 3590
+    },
+    {
+     "fromK": 2716,
+     "toK": 3622
+    },
+    {
+     "fromK": 2740,
+     "toK": 3654
+    },
+    {
+     "fromK": 2764,
+     "toK": 3685
+    },
+    {
+     "fromK": 2788,
+     "toK": 3717
+    }
+   ],
+   "otsu": null
+  },
+  {
+   "ratePct": 45.945,
+   "kou": [
+    {
+     "fromK": 3495,
+     "toK": null
+    },
+    {
+     "fromK": 3527,
+     "toK": null
+    },
+    {
+     "fromK": 3559,
+     "toK": null
+    },
+    {
+     "fromK": 3590,
+     "toK": null
+    },
+    {
+     "fromK": 3622,
+     "toK": null
+    },
+    {
+     "fromK": 3654,
+     "toK": null
+    },
+    {
+     "fromK": 3685,
+     "toK": null
+    },
+    {
+     "fromK": 3717,
+     "toK": null
+    }
+   ],
+   "otsu": {
+    "fromK": 1118,
+    "toK": null
+   }
+  }
+ ],
+ "source": "国税庁 令和8年分 賞与に対する源泉徴収税額の算出率の表 (zeigakuhyo2026/data/15-16.pdf)"
+}

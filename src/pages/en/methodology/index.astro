@@ -1,0 +1,87 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import validation from '../../../data/validation-results.json';
+
+const fmt = (v: unknown): string => {
+  if (Array.isArray(v)) return v.map((x) => (typeof x === 'number' ? '¥' + x.toLocaleString('en-US') : String(x))).join(' / ');
+  if (typeof v === 'number') return '¥' + v.toLocaleString('en-US');
+  return String(v);
+};
+// Short English labels per case (the stored labels are the Japanese build labels).
+const enLabels: Record<string, string> = {
+  'A4-grade': 'Grade lookup: ¥355,000 remuneration -> health grade 25 / pension grade 22 (¥360,000)',
+  'A4': 'Official premium-table row (Osaka): health / health+care / child levy / pension',
+  'A1': 'NTA example inputs, 2026 table: pay ¥374,000, premiums ¥58,008, 2 dependents -> tax',
+  'A1b': 'NTA 2026 worked example: taxable ¥356,600, 2 dependents -> tax',
+  'X1': 'NTA 2026 Otsu example: taxable ¥80,750 (first band) -> tax',
+  'A2': 'NTA bonus example: bonus ¥554,000, premiums ¥84,596, prior taxable ¥196,616, 2 dep. -> tax / net',
+  'X2': 'Rate-table cross-check: prior taxable ¥196,616, 0 dependents -> rate',
+  'A3': 'No-prior-month bonus fallback (current table): after-premium ¥788,771, 1 dep. -> tax / net',
+  'B1': 'Tokyo, 35, 0 dep., ¥340,000 -> premiums / tax / net',
+  'B2': 'Tokyo, 45 (care), 2 dep., ¥360,000 -> premiums / tax / net',
+  'B3': 'Osaka, 30, 0 dep., ¥355,000 -> premiums / tax / net',
+  'B4': 'Saga, 50 (care), 0 dep., ¥345,000 -> premiums / tax / net',
+  'B5': 'Aichi, 28, 2 dep., ¥350,000 -> premiums / tax / net',
+  'B6': 'Otsu-ran, Tokyo, 35, ¥340,000 -> premiums / tax / net',
+  'B7': 'Bonus ¥600,000, Tokyo, 2 dep. -> premiums / tax / net',
+  'B8': 'Annual tax 2026 rules: ¥5,000,000 salary, ¥720,000 premiums, single -> tax',
+  'B9': 'Annual tax 2025 rules (regression pair): same inputs -> tax',
+  'B10': 'Resident tax: prior salary ¥4,800,000, premiums ¥700,000 -> annual / monthly / June',
+};
+---
+
+<Layout
+  lang="en"
+  title="Validation & Sources — Checked Against Official Worked Examples | yuzucalc"
+  description="Every yuzucalc engine is tested against official Japanese worked examples (NTA, Kyokai Kenpo) before publication. Full case list with expected vs actual values, and the primary sources for every parameter."
+  path="/en/methodology/"
+  altPath="/methodology/"
+>
+  <h1>Validation &amp; sources</h1>
+  <p class="lede">No calculator on this site ships until it reproduces official worked examples. The checks run as automated tests against the production engine on every parameter update.</p>
+  <p><span class="stamp">Result <span class="ok">{validation.passed}/{validation.total} PASS</span> · last run {validation.generatedAt.slice(0, 10)}</span></p>
+
+  <h2>Validation cases (inputs · official expected · engine output)</h2>
+  <table class="breakdown">
+    <thead><tr><th>Case</th><th>What it pins</th><th>Expected</th><th>Actual</th><th></th></tr></thead>
+    <tbody>
+      {validation.cases.map((c) => (
+        <tr>
+          <td><strong>{c.id}</strong></td>
+          <td>{enLabels[c.id] ?? c.label}</td>
+          <td class="num">{fmt(c.expected)}</td>
+          <td class="num">{fmt(c.actual)}</td>
+          <td>{c.pass ? '✅' : '❌'}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <h2>Two honest corrections</h2>
+  <h3>A3 — the no-prior-month bonus example</h3>
+  <p>The NTA handbook example (bonus ¥907,800 → tax ¥4,320) predates the 2026 revision of the monthly withholding table (MOF Notice No. 122). Under the current table the relevant cell is ¥0, so this engine returns ¥0 and treats the printed example as pre-revision. The <em>method</em> (÷6, monthly table, ×6) is confirmed in current law: MOF Notice No. 115, note 4.</p>
+  <h3>B8 — annual tax on a ¥5,000,000 salary</h3>
+  <p>Our own pre-launch worksheet applied the 10% quick-calc row to a taxable income of ¥1,800,000. The official quick table (NTA Tax Answer No. 2260) places ¥1,800,000 in the 5% row: the correct tax is ¥91,800 (¥1,800,000 × 5% × 1.021). The engine follows the official table; the worksheet error is recorded here.</p>
+
+  <h2>Parameter sources (primary sources only)</h2>
+  <table class="breakdown">
+    <tbody>
+      <tr><td>Monthly withholding table, 2026</td><td>National Tax Agency official Excel (full grid), cross-checked cell-by-cell against the NTA pamphlet PDF</td></tr>
+      <tr><td>Monthly withholding table, 2027</td><td>Income Tax Act, Appended Table 2, via the e-Gov statute API (applies to payments from Jan 2027)</td></tr>
+      <tr><td>Bonus withholding rate table, 2026</td><td>NTA pamphlet (MOF Notice No. 115, Table 3, as amended by Notice No. 122)</td></tr>
+      <tr><td>Health rates (47 prefectures) & premium tables</td><td>Japan Health Insurance Association (Kyokai Kenpo), FY2026</td></tr>
+      <tr><td>Pension rate 18.3%, standard remuneration grades</td><td>Japan Pension Service</td></tr>
+      <tr><td>Employment insurance rates, FY2026</td><td>Ministry of Health, Labour and Welfare</td></tr>
+      <tr><td>Child & child-rearing levy 0.23%</td><td>Children and Families Agency</td></tr>
+      <tr><td>Employment-income & basic deductions</td><td>NTA Tax Answers No. 1410 / No. 1199 (2026)</td></tr>
+      <tr><td>Income-tax quick table</td><td>NTA Tax Answer No. 2260</td></tr>
+      <tr><td>Resident-tax municipal surtaxes</td><td>Confirmed from official city/prefecture pages (Yokohama, Kobe, Nagoya, Fukuoka, Sapporo, Miyagi Prefecture, Osaka City, Toyooka). Osaka City: per-capita levy ¥3,000 city + ¥1,300 prefecture (incl. a ¥300 prefectural forest-environment surcharge through FY2027) = ¥4,300 (Osaka City FY2026 tax-filing guide). Toyooka: city income levy 6.1%, prefectural per-capita levy ¥1,800 incl. ¥800 green tax (Toyooka City FY2026 guide).</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Editorial policy</h2>
+  <p>Numbers come only from primary official publications — never from other calculators. Every rate displays its source and effective period. Parameters are versioned by calendar year (income tax), fiscal year (premiums) and payment date (withholding tables), so past years stay reproducible. A calculator that fails validation is not published. Errors, when found, are corrected with a note on this page.</p>
+
+  <h2>Embedding</h2>
+  <p>An embed program is in preparation. Terms will require the yuzucalc logo, a "Powered by yuzucalc" line, and a backlink to the calculator page with its main keyword as anchor text. Details will be announced on this page.</p>
+</Layout>

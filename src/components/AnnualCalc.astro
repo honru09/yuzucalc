@@ -1,0 +1,144 @@
+---
+import { annualView, prefectures } from '../lib/engine/index.ts';
+import { yen } from '../lib/ui.ts';
+
+interface Props { lang: 'ja' | 'en' }
+const { lang } = Astro.props;
+const ja = lang === 'ja';
+const t = ja
+  ? {
+      monthly: '月給（額面）', bonusAnnual: '賞与の年間合計', bonusPayments: '賞与の回数（年）',
+      prefecture: '勤務先の都道府県', age: '年齢', spouse: '配偶者控除あり（配偶者の所得48万円以下）',
+      depGeneral: '扶養親族（一般）', depSpecific: '特定扶養（19〜22歳）', depElderly: '老人扶養（別居）', depCohabit: '老人扶養（同居）',
+      override: '健康保険料率（手入力・％）',
+      result: '計算結果（令和8年分）',
+      rows: {
+        gross: '年収（額面）', si: '社会保険料（年間・概算）', salaryIncome: '給与所得', basic: '基礎控除',
+        family: '配偶者・扶養控除', taxable: '課税所得', tax: '所得税（年税額）', resident: '住民税（翌年度・年額）',
+        residentMonthly: 'うち月額（特別徴収）', net: '手取り年収（社保・所得税控除後）',
+      },
+      note: '社会保険料は月給と賞与から自動で概算します。住民税は翌年度に課税される見込み額です（今年の手取りからは引かれません）。',
+    }
+  : {
+      monthly: 'Monthly gross salary', bonusAnnual: 'Total annual bonus', bonusPayments: 'Bonuses per year',
+      prefecture: 'Prefecture of employer', age: 'Age', spouse: 'Spouse deduction (spouse income <= ¥480,000)',
+      depGeneral: 'Dependents (general)', depSpecific: 'Dependents 19-22 (specific)', depElderly: 'Elderly dependents (separate household)', depCohabit: 'Elderly dependents (same household)',
+      override: 'Health rate override (%)',
+      result: 'Result (2026 / Reiwa 8)',
+      rows: {
+        gross: 'Annual gross', si: 'Social insurance (annual, estimated)', salaryIncome: 'Employment income', basic: 'Basic deduction',
+        family: 'Spouse & dependent deductions', taxable: 'Taxable income', tax: 'Income tax (annual)', resident: 'Resident tax (next year, annual)',
+        residentMonthly: 'of which monthly (payroll deduction)', net: 'Annual take-home (after SI + income tax)',
+      },
+      note: 'Social insurance is estimated automatically from the monthly salary and bonuses. Resident tax is next year\u2019s levy on this income — it is not deducted from this year\u2019s pay.',
+    };
+
+const def = annualView({
+  monthlyGross: 350000, bonusAnnual: 700000, bonusPayments: 2, prefectureSlug: 'tokyo',
+  age: 35, dependents: 0, spouse: false, dependentTypes: [], column: 'kou',
+});
+---
+
+<div class="grid2">
+  <div class="card">
+    <form class="calc" id="an-form">
+      <label class="unit" data-unit={ja ? '円' : 'JPY'}>{t.monthly}<input name="monthly" type="number" inputmode="numeric" min="0" step="1000" value="350000" /></label>
+      <label class="unit" data-unit={ja ? '円' : 'JPY'}>{t.bonusAnnual}<input name="bonusAnnual" type="number" inputmode="numeric" min="0" step="10000" value="700000" /></label>
+      <label>{t.bonusPayments}
+        <select name="bonusPayments"><option value="0">0</option><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option></select>
+      </label>
+      <label>{t.prefecture}
+        <select name="prefecture">
+          {prefectures.map((p) => <option value={p.slug} selected={p.slug === 'tokyo'}>{ja ? p.ja : p.en}{p.healthRatePct != null ? ` — ${p.healthRatePct.toFixed(2)}%` : ''}</option>)}
+        </select>
+      </label>
+      <label>{t.age}<input name="age" type="number" inputmode="numeric" min="16" max="100" value="35" /></label>
+      <label>{t.depGeneral}<input name="depGeneral" type="number" inputmode="numeric" min="0" max="10" value="0" /></label>
+      <label>{t.depSpecific}<input name="depSpecific" type="number" inputmode="numeric" min="0" max="10" value="0" /></label>
+      <label>{t.depElderly}<input name="depElderly" type="number" inputmode="numeric" min="0" max="10" value="0" /></label>
+      <label>{t.depCohabit}<input name="depCohabit" type="number" inputmode="numeric" min="0" max="10" value="0" /></label>
+      <label style="display:flex; gap:8px; align-items:center"><input name="spouse" type="checkbox" style="width:auto" /> {t.spouse}</label>
+      <label class="unit" data-unit="%">{t.override}<input name="override" type="number" inputmode="decimal" min="0" max="20" step="0.01" /></label>
+    </form>
+    <p class="src" style="margin-top:14px">{t.note}</p>
+  </div>
+  <div class="card result" id="an-result" aria-live="polite">
+    <div class="result-head">
+      <div class="src" style="font-weight:700; letter-spacing:.06em">{t.result}</div>
+      <button type="button" class="btn ghost noprint" onclick="window.print()">{ja ? '結果を印刷' : 'Print result'}</button>
+    </div>
+    <div class="net-big"><span data-v="net">{yen(def.netAnnual)}</span> <span class="unit">/ {ja ? '年' : 'year'}</span></div>
+    <table class="breakdown"><tbody>
+      <tr><td>{t.rows.gross}</td><td class="v num" data-v="gross">{yen(def.grossAnnual)}</td></tr>
+      <tr class="sub"><td>{t.rows.si}</td><td class="v num" data-v="si">−{yen(def.socialInsuranceAnnual)}</td></tr>
+      <tr class="sub"><td>{t.rows.salaryIncome}</td><td class="v num" data-v="salaryIncome">{yen(def.incomeTax.salaryIncome)}</td></tr>
+      <tr class="sub"><td>{t.rows.basic}</td><td class="v num" data-v="basic">−{yen(def.incomeTax.basicDeduction)}</td></tr>
+      <tr class="sub"><td>{t.rows.family}</td><td class="v num" data-v="family">−{yen(def.incomeTax.familyDeductions)}</td></tr>
+      <tr class="sub"><td>{t.rows.taxable}</td><td class="v num" data-v="taxable">{yen(def.incomeTax.taxableIncome)}</td></tr>
+      <tr><td>{t.rows.tax}</td><td class="v num" data-v="tax">−{yen(def.incomeTax.tax)}</td></tr>
+      <tr><td>{t.rows.resident}</td><td class="v num" data-v="resident">{yen(def.residentTaxNextYear.annual)}</td></tr>
+      <tr class="sub"><td>{t.rows.residentMonthly}</td><td class="v num" data-v="residentMonthly">{yen(def.residentTaxNextYear.monthlyInstalment)}</td></tr>
+      <tr class="total"><td>{t.rows.net}</td><td class="v num" data-v="net2">{yen(def.netAnnual)}</td></tr>
+    </tbody></table>
+  </div>
+</div>
+<div class="sticky-net" aria-hidden="true">
+  <span>{t.rows.net}<span class="lbl">/ {ja ? '年' : 'year'}</span></span>
+  <strong data-sticky>{yen(def.netAnnual)}</strong>
+</div>
+
+<script>
+  import { annualView, type DependentType } from '../lib/engine/index.ts';
+  import { yen, setText, queryParams, syncQuery, field, fieldNum, countUpYen, flash } from '../lib/ui.ts';
+  const form = document.getElementById('an-form') as HTMLFormElement;
+  const result = document.getElementById('an-result') as HTMLElement;
+  function applyQuery() {
+    const q = queryParams();
+    const names = ['monthly', 'bonusAnnual', 'bonusPayments', 'prefecture', 'age', 'depGeneral', 'depSpecific', 'depElderly', 'depCohabit', 'override'];
+    for (const n of names) if (q[n] != null) field(form, n).value = q[n];
+    if (q.spouse != null) (field(form, 'spouse') as HTMLInputElement).checked = q.spouse === '1';
+  }
+  function compute() {
+    const deps: DependentType[] = [];
+    const push = (name: string, type: DependentType) => {
+      const c = Math.min(10, Math.max(0, Math.floor(fieldNum(form, name, 0))));
+      for (let i = 0; i < c; i++) deps.push(type);
+    };
+    push('depGeneral', 'general'); push('depSpecific', 'specific'); push('depElderly', 'elderly'); push('depCohabit', 'elderlyCohabit');
+    const spouse = (field(form, 'spouse') as HTMLInputElement).checked;
+    const ovRaw = field(form, 'override').value;
+    const r = annualView({
+      monthlyGross: Math.max(0, fieldNum(form, 'monthly', 0)),
+      bonusAnnual: Math.max(0, fieldNum(form, 'bonusAnnual', 0)),
+      bonusPayments: parseInt(field(form, 'bonusPayments').value, 10) || 0,
+      prefectureSlug: field(form, 'prefecture').value,
+      age: Math.min(100, Math.max(16, fieldNum(form, 'age', 35))),
+      dependents: deps.length, spouse, dependentTypes: deps, column: 'kou',
+      healthRateOverridePct: ovRaw === '' ? null : parseFloat(ovRaw),
+    });
+    countUpYen(result.querySelector('[data-v="net"]'), r.netAnnual); setText(result, 'net2', yen(r.netAnnual));
+    const sticky = document.querySelector('[data-sticky]');
+    if (sticky) sticky.textContent = yen(r.netAnnual);
+    setText(result, 'gross', yen(r.grossAnnual));
+    setText(result, 'si', '−' + yen(r.socialInsuranceAnnual));
+    setText(result, 'salaryIncome', yen(r.incomeTax.salaryIncome));
+    setText(result, 'basic', '−' + yen(r.incomeTax.basicDeduction));
+    setText(result, 'family', '−' + yen(r.incomeTax.familyDeductions));
+    setText(result, 'taxable', yen(r.incomeTax.taxableIncome));
+    setText(result, 'tax', '−' + yen(r.incomeTax.tax));
+    setText(result, 'resident', yen(r.residentTaxNextYear.annual));
+    setText(result, 'residentMonthly', yen(r.residentTaxNextYear.monthlyInstalment));
+    syncQuery({
+      monthly: fieldNum(form, 'monthly', 0), bonusAnnual: fieldNum(form, 'bonusAnnual', 0),
+      bonusPayments: field(form, 'bonusPayments').value, prefecture: field(form, 'prefecture').value,
+      age: fieldNum(form, 'age', 35), depGeneral: fieldNum(form, 'depGeneral', 0), depSpecific: fieldNum(form, 'depSpecific', 0),
+      depElderly: fieldNum(form, 'depElderly', 0), depCohabit: fieldNum(form, 'depCohabit', 0),
+      spouse: spouse ? 1 : null, override: ovRaw === '' ? null : ovRaw,
+    });
+  }
+  applyQuery();
+  form.addEventListener('input', compute);
+  form.addEventListener('change', compute);
+  form.addEventListener('change', () => flash(result));
+  compute();
+</script>

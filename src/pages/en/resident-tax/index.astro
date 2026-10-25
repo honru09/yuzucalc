@@ -1,0 +1,45 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import ResidentCalc from '../../../components/ResidentCalc.astro';
+import Year2Scenario from '../../../components/Year2Scenario.astro';
+import validation from '../../../data/validation-results.json';
+---
+
+<Layout
+  lang="en"
+  title="Japan Resident Tax Calculator + The Year-2 Pay Drop, Explained | yuzucalc"
+  description="Resident tax (juminzei) from last year's salary: income levy, per-capita levy, forest tax, adjustment credit, and the June instalment split. Plus the first-year-in-Japan explainer: why pay drops in year 2."
+  path="/en/resident-tax/"
+  altPath="/resident-tax/"
+>
+  <h1>Japan resident tax calculator</h1>
+  <p class="lede">Resident tax (<em>juminzei</em>) is levied on <strong>last year's income</strong> and collected from salary in 12 instalments, June to May. Enter last year's salary to see this year's annual amount and monthly deduction.</p>
+  <p><span class="stamp">Standard rates + verified municipal surtax data <span class="ok">Validated on {validation.passed}/{validation.total} official examples</span></span></p>
+
+  <ResidentCalc lang="en" />
+
+  <h2>New to Japan? The year-2 pay drop</h2>
+  <p>The single biggest payroll surprise for foreign hires: in your first year there is <strong>no resident tax at all</strong>, because there is no prior-year Japanese income. From June of year two, a full year of resident tax on year one's salary starts leaving your payslip — with no change in salary, take-home simply drops. Try your own numbers:</p>
+  <Year2Scenario lang="en" />
+  <p>Budget for it from your first payslip: a rough reserve is one month of the instalment shown above, every month of year one. If you leave Japan, the remaining balance does not disappear — it is settled via a tax representative or lump-sum collection, which catches many leavers out.</p>
+
+  <h2>How resident tax is computed</h2>
+  <div class="formula">Income levy = (employment income − social insurance − ¥430,000 basic − family deductions) × 10% − adjustment credit + ¥4,000 per-capita + ¥1,000 forest tax</div>
+  <p>Key differences from income tax: the basic deduction is only ¥430,000 (vs up to ¥1,040,000 nationally in 2026), the rate is a flat 10% in almost every municipality, and an adjustment credit reconciles the different personal deductions between the two taxes (implemented here from the actual deduction gaps, with its ¥2,500 floor). Instalments follow the official payroll rule: annual ÷ 12 truncated to ¥100, with the remainder added to June — validated example: ¥4,800,000 salary, ¥700,000 social insurance → ¥229,500/year, ¥19,100 × 11 + ¥19,400 in June.</p>
+  <h3>Municipal differences</h3>
+  <p>Most municipalities use the standard rates, but there are exceptions — Yokohama levies 10.025% with a ¥6,200 flat total, Nagoya is the only city below standard (9.7%), and Toyooka is the only city above standard on the income levy (10.1%). Verified surtax municipalities are selectable in the calculator. Osaka City's income levy is standard, but its prefectural per-capita levy carries a ¥300 surcharge through FY2027: ¥3,000 city + ¥1,300 prefecture = ¥4,300 (¥5,300 with the national forest tax), confirmed from the city's official tax guide.</p>
+
+  <h2>Frequently asked questions</h2>
+  <div class="faq">
+    <details class="acc"><summary>I moved cities mid-year. Who do I pay?</summary><div class="acc-body"><div class="acc-in"><div>The municipality where you were registered on January 1 of the levy year receives the full year, regardless of moves after that.</div></div></div></details>
+    <details class="acc"><summary>Does furusato nozei reduce resident tax?</summary><div class="acc-body"><div class="acc-in"><div>Yes — the donation minus ¥2,000 comes back across income tax and resident tax, and the cap that keeps your cost at ¥2,000 hinges on 20% of the income levy (after the adjustment credit). A dedicated furusato nozei calculator is in preparation and will ship once it passes validation against the Ministry of Internal Affairs' primary materials.</div></div></div></details>
+    <details class="acc"><summary>Is there a non-taxable threshold?</summary><div class="acc-body"><div class="acc-in"><div>Yes. For a single person, no levy at all applies once employment income is around ¥450,000 or below (the exact line depends on the municipality's grade). The threshold logic is implemented here.</div></div></div></details>
+  </div>
+
+  <h2>Related calculators</h2>
+  <div class="mesh">
+    <a href="/en/take-home/">Monthly take-home</a>
+    <a href="/en/annual/">Annual salary & tax</a>
+    <a href="/en/methodology/">Validation & sources</a>
+  </div>
+</Layout>

@@ -1,0 +1,56 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AnnualCalc from '../../components/AnnualCalc.astro';
+import AffiliateSlot from '../../components/AffiliateSlot.astro';
+import validation from '../../data/validation-results.json';
+---
+
+<Layout
+  lang="ja"
+  title="年収の手取り・所得税計算機｜令和8年分（基礎控除104万円対応）— ゆずcalc"
+  description="年収から給与所得・所得税の年税額・手取り年収を計算。令和8年分の基礎控除（最大104万円）と給与所得控除（最低74万円）に対応し、令和7年分との差も検証しています。"
+  path="/annual/"
+  altPath="/en/annual/"
+>
+  <h1>年収の手取り・所得税計算機</h1>
+  <p class="lede">月給と賞与から年収を組み立て、社会保険料の年間総額、給与所得、所得税の年税額、手取り年収までを一括で計算します。あわせて翌年度の住民税の見込みも表示します。</p>
+  <p><span class="stamp">所得税：令和8年分 <span class="ok">公式算例 {validation.passed}/{validation.total} 件で検証済み</span></span></p>
+
+  <AnnualCalc lang="ja" />
+
+  <h2>年税額の計算式</h2>
+  <div class="formula">課税所得 = 年収 − 給与所得控除 − 社会保険料 − 基礎控除 − 配偶者・扶養控除 → 速算表 × 1.021（復興特別所得税）</div>
+  <h3>令和8年分の改正点（この計算機の対応）</h3>
+  <p>令和8年分は基礎控除が大きく変わりました。合計所得4,890万円以下では<strong>104万円</strong>（令和7年分は所得に応じて58万〜95万円）です。給与所得控除の最低保障も74万円（年収220万円以下は一律74万円）に引き上げられました。旧来の「年収の40% − 10万円」という式は令和8年分には存在しません。この計算機は年分ごとにパラメータを持ち、令和7年分の条件でも計算を再現できます（検証ケースとして常時テストしています）。</p>
+  <table class="breakdown">
+    <thead><tr><th>同じ条件（年収500万円・社保72万円・単身）</th><th>年税額</th></tr></thead>
+    <tbody>
+      <tr><td>令和8年分（基礎控除104万円）</td><td class="v num">¥91,800</td></tr>
+      <tr><td>令和7年分（基礎控除68万円）</td><td class="v num">¥120,900</td></tr>
+      <tr><td>差額</td><td class="v num">¥29,100 の減税</td></tr>
+    </tbody>
+  </table>
+  <p class="src">令和8年分の基礎控除の引き上げは月々の源泉徴収（月額表）には反映されず、令和8年12月の年末調整で精算されます。「給与明細が変わらないのに年末調整の還付が大きい」年になる見込みです。</p>
+
+  <AffiliateSlot
+    lang="ja"
+    title="年収を上げる転職も、税金の設計のうちです"
+    body="額面だけでなく、手取りベースでオファーを比較するのが確実です。この計算機の逆算（手取り→額面）もご活用ください。提携サービスが決まり次第、ここに案内を掲載します。"
+    linkLabel="転職サービス（提携リンク・準備中）"
+  />
+
+  <h2>よくある質問</h2>
+  <div class="faq">
+    <details class="acc"><summary>「年収の壁」（103万円・130万円など）には対応していますか？</summary><div class="acc-body"><div class="acc-in"><div>この計算機は本人の税額を計算するもので、配偶者控除は「配偶者の所得48万円以下」の前提で控除額を計算しています。壁の判定は世帯構成と加入保険で変わるため、配偶者側の年収を変えながら配偶者控除の有無を切り替えて比較してください。</div></div></div></details>
+    <details class="acc"><summary>社会保険料の年間総額はどう出していますか？</summary><div class="acc-body"><div class="acc-in"><div>月給の社会保険料（等級ベース）×12 + 賞与の社会保険料（標準賞与額ベース）で概算しています。実際の年間総額は等級の改定時期により多少前後します。</div></div></div></details>
+    <details class="acc"><summary>所得税の「年税額」と毎月の源泉徴収の合計は一致しますか？</summary><div class="acc-body"><div class="acc-in"><div>一致しません。源泉徴収は月額表・算出率による概算の前払いで、年税額との差は年末調整で精算されます。このページの年税額が「確定した1年分の税金」です。</div></div></div></details>
+  </div>
+
+  <h2>関連する計算機</h2>
+  <div class="mesh">
+    <a href="/take-home/">月給の手取り計算</a>
+    <a href="/bonus/">賞与の手取り計算</a>
+    <a href="/resident-tax/">住民税と2年目のシミュレーション</a>
+    <a href="/methodology/">検証と出典</a>
+  </div>
+</Layout>

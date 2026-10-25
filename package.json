@@ -1,0 +1,17 @@
+{
+  "name": "yuzucalc",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "params": "node scripts/build-params.mjs",
+    "validate": "node scripts/validate.mjs",
+    "build": "node scripts/build-params.mjs && node scripts/validate.mjs && astro build",
+    "dev": "astro dev",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.2.1",
+    "astro": "^5.13.0"
+  }
+}

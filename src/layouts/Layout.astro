@@ -1,0 +1,298 @@
+---
+interface Props {
+  lang: 'ja' | 'en';
+  title: string;
+  description: string;
+  /** Path of this page in its own language, e.g. '/take-home/' or '/en/take-home/' */
+  path: string;
+  /** Same page in the other language */
+  altPath: string;
+}
+const { lang, title, description, path, altPath } = Astro.props;
+const site = 'https://yuzucalc.com';
+const isJa = lang === 'ja';
+const nav = isJa
+  ? [
+      { href: '/take-home/', label: '手取り計算' },
+      { href: '/bonus/', label: '賞与計算' },
+      { href: '/annual/', label: '年収・年税額' },
+      { href: '/resident-tax/', label: '住民税' },
+      { href: '/methodology/', label: '検証と出典' },
+    ]
+  : [
+      { href: '/en/take-home/', label: 'Take-Home Pay' },
+      { href: '/en/bonus/', label: 'Bonus' },
+      { href: '/en/annual/', label: 'Annual Tax' },
+      { href: '/en/resident-tax/', label: 'Resident Tax' },
+      { href: '/en/methodology/', label: 'Validation & Sources' },
+    ];
+---
+
+<!doctype html>
+<html lang={isJa ? 'ja' : 'en'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={site + path} />
+    <link rel="alternate" hreflang={isJa ? 'en' : 'ja'} href={site + altPath} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <style is:global>
+      :root {
+        --ink: #1b2a30;
+        --ink-soft: #43565e;
+        --paper: #fffdf6;
+        --card: #ffffff;
+        --accent: #e8a812;
+        --accent-deep: #b97f06;
+        --accent-soft: #fbf0d0;
+        --line: #e7dfca;
+        --good: #1e7a4c;
+        --radius: 14px;
+        --shadow: 0 1px 2px rgba(27, 42, 48, 0.06), 0 8px 24px rgba(27, 42, 48, 0.06);
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic UI', system-ui, sans-serif;
+        line-height: 1.75;
+        font-size: 16px;
+      }
+      .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+      a { color: var(--accent-deep); }
+      header.site {
+        border-bottom: 1px solid var(--line);
+        background: rgba(255, 253, 246, 0.92);
+        position: sticky; top: 0; z-index: 10;
+        backdrop-filter: blur(6px);
+      }
+      .bar {
+        max-width: 1060px; margin: 0 auto; padding: 10px 16px;
+        display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+      }
+      .brand { display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--ink); font-weight: 800; font-size: 20px; letter-spacing: 0.02em; }
+      .brand .yuzu { width: 31px; height: 31px; flex: none; }
+      .brand small { font-weight: 600; color: var(--ink-soft); font-size: 11px; display: block; line-height: 1.2; letter-spacing: 0.06em; }
+      nav.main { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+      nav.main a {
+        color: var(--ink); text-decoration: none; font-size: 14px; font-weight: 600;
+        padding: 6px 10px; border-radius: 999px;
+      }
+      nav.main a:hover { background: var(--accent-soft); }
+      .langswitch { font-size: 13px; font-weight: 700; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; text-decoration: none; color: var(--ink); background: var(--card); }
+      main { max-width: 1060px; margin: 0 auto; padding: 28px 16px 64px; }
+      h1 { font-size: clamp(26px, 4.6vw, 38px); line-height: 1.35; margin: 6px 0 10px; }
+      h2 { font-size: 22px; margin: 38px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--accent-soft); }
+      h3 { font-size: 17px; margin: 24px 0 8px; }
+      p.lede { color: var(--ink-soft); font-size: 17px; margin: 0 0 8px; }
+      .card {
+        background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+        box-shadow: var(--shadow); padding: 20px;
+      }
+      .stamp {
+        display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap;
+        background: var(--accent-soft); border: 1px solid var(--line); border-radius: 999px;
+        padding: 4px 14px; font-size: 13px; font-weight: 600;
+      }
+      .stamp .ok { color: var(--good); }
+      table.breakdown { width: 100%; border-collapse: collapse; font-size: 15px; }
+      table.breakdown th, table.breakdown td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+      table.breakdown td.v { text-align: right; white-space: nowrap; font-weight: 700; }
+      table.breakdown tr.total td { border-top: 2px solid var(--ink); border-bottom: none; font-size: 17px; }
+      table.breakdown tr.sub td:first-child { padding-left: 24px; color: var(--ink-soft); font-weight: 400; }
+      .src { font-size: 12.5px; color: var(--ink-soft); }
+      .src a { color: var(--ink-soft); }
+      form.calc { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px 18px; }
+      form.calc label { display: block; font-size: 13.5px; font-weight: 700; }
+      form.calc input, form.calc select {
+        width: 100%; margin-top: 5px; padding: 11px 12px; font-size: 17px;
+        border: 1.5px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink);
+      }
+      form.calc input:focus, form.calc select:focus { outline: 3px solid var(--accent-soft); border-color: var(--accent); }
+      .net-big { font-size: clamp(30px, 6vw, 44px); font-weight: 800; line-height: 1.2; }
+      .net-big .unit { font-size: 0.5em; font-weight: 700; color: var(--ink-soft); }
+      .grid2 { display: grid; grid-template-columns: 1fr; gap: 20px; }
+      @media (min-width: 860px) { .grid2 { grid-template-columns: 5fr 6fr; align-items: start; } }
+      .faq dt { font-weight: 700; margin-top: 16px; }
+      .faq dd { margin: 4px 0 0; color: var(--ink-soft); }
+      .formula {
+        font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 14px;
+        background: #f6f1de; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; white-space: nowrap;
+      }
+      .slot {
+        border: 1.5px dashed var(--accent); border-radius: var(--radius); background: #fffaf0;
+        padding: 16px 18px; margin: 26px 0;
+      }
+      .slot .tag { font-size: 11.5px; font-weight: 800; letter-spacing: 0.08em; color: var(--accent-deep); text-transform: uppercase; }
+      footer.site { border-top: 1px solid var(--line); background: #fbf7ea; }
+      footer.site .bar { align-items: flex-start; }
+      footer.site p { font-size: 13px; color: var(--ink-soft); max-width: 640px; }
+      .mesh { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+      .mesh a {
+        border: 1px solid var(--line); background: var(--card); border-radius: 999px;
+        padding: 7px 14px; font-size: 14px; font-weight: 600; text-decoration: none; color: var(--ink);
+      }
+      .mesh a:hover { border-color: var(--accent); background: var(--accent-soft); }
+
+      /* ===== Design pass (DESIGN.md): finished states for every element ===== */
+      :root {
+        --tax: #c25e3a;
+        --mut: #8a97a0;
+        --ring: rgba(232, 168, 18, 0.45);
+        --ease: cubic-bezier(0.22, 0.8, 0.28, 1);
+      }
+      ::selection { background: var(--accent-soft); }
+      :focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 6px; }
+      nav.main a { transition: background 0.15s var(--ease), color 0.15s var(--ease); }
+      nav.main a[aria-current='page'] { background: var(--ink); color: #fff; }
+      nav.main a[aria-current='page']:hover { background: var(--ink); }
+      .langswitch { transition: border-color 0.15s var(--ease), background 0.15s var(--ease), transform 0.1s var(--ease); }
+      .langswitch:hover { border-color: var(--accent); background: var(--accent-soft); }
+      .langswitch:active { transform: scale(0.96); }
+      .brand:hover .yuzu { transform: rotate(-8deg) scale(1.06); }
+      .brand .yuzu { transition: transform 0.35s var(--ease); }
+      h2 { position: relative; padding-left: 14px; }
+      h2::before {
+        content: ''; position: absolute; left: 0; top: 0.32em; bottom: 0.42em; width: 5px;
+        border-radius: 99px; background: linear-gradient(var(--accent), #f6c445);
+      }
+      /* Inputs: hover + focus ring + unit chip (Omni pattern) */
+      form.calc input, form.calc select { transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease); }
+      form.calc input:hover, form.calc select:hover { border-color: #cfc29c; }
+      form.calc input:focus, form.calc select:focus {
+        outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring);
+      }
+      form.calc label.unit { position: relative; }
+      form.calc label.unit::after {
+        content: attr(data-unit); position: absolute; right: 9px; bottom: 10px;
+        font-size: 12px; font-weight: 700; color: var(--accent-deep);
+        background: var(--accent-soft); border-radius: 999px; padding: 2px 9px; pointer-events: none;
+      }
+      form.calc label.unit input { padding-right: 54px; }
+      /* Buttons */
+      .btn {
+        appearance: none; border: 0; cursor: pointer; font: inherit; font-size: 14px; font-weight: 700;
+        color: #3d2c00; background: linear-gradient(180deg, #f8c33c, var(--accent));
+        border-radius: 999px; padding: 9px 18px; box-shadow: 0 1px 2px rgba(27,42,48,.18), inset 0 1px 0 rgba(255,255,255,.5);
+        transition: transform 0.12s var(--ease), box-shadow 0.15s var(--ease), filter 0.15s var(--ease);
+      }
+      .btn:hover { transform: translateY(-1px); filter: brightness(1.03); box-shadow: 0 4px 14px rgba(232,168,18,.35); }
+      .btn:active { transform: translateY(0) scale(0.98); }
+      .btn.ghost { background: var(--card); color: var(--ink); border: 1.5px solid var(--line); box-shadow: none; }
+      .btn.ghost:hover { border-color: var(--accent); background: var(--accent-soft); box-shadow: none; }
+      /* Result panel */
+      .card.result { border-top: 4px solid var(--accent); }
+      .card.result.flash { animation: resultPulse 0.55s var(--ease); }
+      @keyframes resultPulse {
+        0% { box-shadow: 0 0 0 0 var(--ring), var(--shadow); }
+        100% { box-shadow: 0 0 0 16px rgba(232, 168, 18, 0), var(--shadow); }
+      }
+      .result-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+      /* Ledger: zebra + hover */
+      table.breakdown tbody tr { transition: background 0.15s var(--ease); }
+      table.breakdown tbody tr:nth-child(even) { background: rgba(251, 240, 208, 0.32); }
+      table.breakdown tbody tr:hover { background: #fff6da; }
+      table.breakdown tr.total { background: transparent !important; }
+      /* Composition bar (SmartAsset pattern) */
+      .stack { display: flex; height: 14px; border-radius: 999px; overflow: hidden; background: #f1ead2; margin-top: 14px; }
+      .stack > span { display: block; height: 100%; transition: width 0.6s var(--ease); }
+      .stack .s-si { background: var(--accent); }
+      .stack .s-tax { background: var(--tax); }
+      .stack .s-res { background: var(--mut); }
+      .stack .s-net { background: var(--good); }
+      .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12.5px; color: var(--ink-soft); margin-top: 8px; }
+      .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; }
+      /* FAQ accordion */
+      .faq details.acc {
+        border: 1px solid var(--line); border-radius: 12px; background: var(--card);
+        margin-top: 10px; overflow: hidden; box-shadow: 0 1px 2px rgba(27,42,48,.04);
+      }
+      .faq summary {
+        cursor: pointer; font-weight: 700; padding: 13px 42px 13px 16px; position: relative;
+        list-style: none; transition: background 0.15s var(--ease);
+      }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary:hover { background: #fffaf0; }
+      .faq summary::after {
+        content: ''; position: absolute; right: 17px; top: 50%; width: 9px; height: 9px;
+        border-right: 2.2px solid var(--accent-deep); border-bottom: 2.2px solid var(--accent-deep);
+        transform: translateY(-70%) rotate(45deg); transition: transform 0.3s var(--ease);
+      }
+      .faq details[open ] summary::after { transform: translateY(-30%) rotate(225deg); }
+      .faq .acc-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.32s var(--ease); }
+      .faq details[open ] .acc-body { grid-template-rows: 1fr; }
+      .faq .acc-in { overflow: hidden; }
+      .faq .acc-in > div { padding: 0 16px 15px; color: var(--ink-soft); }
+      /* Sticky mobile result bar */
+      .sticky-net { display: none; }
+      @media (max-width: 859px) {
+        .sticky-net {
+          display: flex; position: fixed; left: 10px; right: 10px; z-index: 30;
+          bottom: calc(10px + env(safe-area-inset-bottom));
+          background: rgba(27, 42, 48, 0.95); color: #fff; border-radius: 14px;
+          padding: 10px 16px; align-items: center; justify-content: space-between; gap: 12px;
+          box-shadow: 0 10px 30px rgba(27, 42, 48, 0.35); backdrop-filter: blur(6px);
+          font-size: 13.5px; font-weight: 600;
+        }
+        .sticky-net strong { font-size: 20px; font-variant-numeric: tabular-nums; }
+        .sticky-net .lbl { opacity: 0.75; font-size: 12px; display: block; line-height: 1.3; }
+        body:has(.sticky-net) { padding-bottom: 72px; }
+      }
+      /* Print: the result, nothing but the result */
+      @media print {
+        header.site, footer.site, .slot, .sticky-net, form.calc, .noprint, nav.main { display: none !important; }
+        body { background: #fff; }
+        main { max-width: none; padding: 0; }
+        .card { box-shadow: none; }
+        .stack > span, .legend i { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      }
+      /* Reduced motion: everything settles instantly */
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important; scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site">
+      <div class="bar">
+        <a class="brand" href={isJa ? '/' : '/en/'}>
+          <svg class="yuzu" viewBox="0 0 48 48" aria-hidden="true"><defs><radialGradient id="yzh" cx="38%" cy="30%" r="80%"><stop offset="0%" stop-color="#ffdf5e"/><stop offset="55%" stop-color="#f7b81d"/><stop offset="100%" stop-color="#eda706"/></radialGradient></defs><path d="M30.6 5.1C33.9 2.2 38.3 1.7 41.6 2.9c-.3 3.9-2.7 7-6.2 7.9-2.9.7-5.1-2-4.8-5.7Z" fill="#3f9153"/><circle cx="23" cy="9.4" r="3.3" fill="#d99a06"/><circle cx="23.5" cy="27.5" r="16.5" fill="url(#yzh)"/><circle cx="23.5" cy="27.5" r="16.5" fill="none" stroke="#d99a06" stroke-width="1.4"/><circle cx="23.5" cy="27.5" r="12.9" fill="none" stroke="#c07f04" stroke-width="1.4" opacity="0.5"/><g stroke="#7c4d00" stroke-width="3.4" stroke-linecap="round" fill="none"><path d="M17.2 21.6 23.5 28.4 29.8 21.6"/><path d="M23.5 28.4v8"/><path d="M18.2 31.1h10.6"/><path d="M18.2 34.5h10.6"/></g></svg>
+          <span>{isJa ? 'ゆずcalc' : 'yuzucalc'}<small>{isJa ? '日本の給与・税金計算機' : 'Japan payroll calculators'}</small></span>
+        </a>
+        <nav class="main">
+          {nav.map((n) => (
+            <a href={n.href} aria-current={path === n.href || path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>
+          ))}
+        </nav>
+        <a class="langswitch" href={altPath}>{isJa ? 'EN' : '日本語'}</a>
+      </div>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site">
+      <div class="bar">
+        <div>
+          <p>
+            <strong>{isJa ? 'ゆずcalc（yuzucalc.com）' : 'yuzucalc.com'}</strong> —{' '}
+            {isJa
+              ? '日本の給与計算を、国税庁・協会けんぽ・厚生労働省の一次資料だけで計算する計算機集です。すべての計算機は公式の設例・算例で検証してから公開しています。'
+              : 'Japan payroll calculators computed only from primary sources (National Tax Agency, Japan Health Insurance Association, MHLW). Every calculator is validated against official worked examples before publication.'}
+          </p>
+          <p>
+            {isJa
+              ? '本サイトの計算は概算です。実際の給与明細は勤務先の給与規定・加入する健康保険組合・お住まいの市区町村により異なります。税務の最終判断は税務署・税理士にご確認ください。'
+              : 'Results are estimates. Actual payslips vary with employer rules, your health-insurance society and your municipality. Confirm tax decisions with a tax office or licensed tax accountant.'}
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

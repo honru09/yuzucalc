@@ -1,0 +1,42 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BonusCalc from '../../components/BonusCalc.astro';
+import validation from '../../data/validation-results.json';
+---
+
+<Layout
+  lang="ja"
+  title="賞与（ボーナス）の手取り計算機｜算出率の表・令和8年分 — ゆずcalc"
+  description="賞与の額面から手取りを計算。社会保険料は標準賞与額ベース、所得税は国税庁の算出率の表（令和8年分・全表収録）で計算し、公式設例で検証済みです。"
+  path="/bonus/"
+  altPath="/en/bonus/"
+>
+  <h1>賞与（ボーナス）の手取り計算機</h1>
+  <p class="lede">賞与の所得税は、月給とはまったく別の仕組みで決まります。「前月の給与（社会保険料を引いた後）」が属する区分で税率が決まる<strong>算出率の表</strong>を使うのがポイントです。</p>
+  <p><span class="stamp">算出率の表：令和8年分（全21税率を収録） <span class="ok">公式算例 {validation.passed}/{validation.total} 件で検証済み</span></span></p>
+
+  <BonusCalc lang="ja" />
+
+  <h2>賞与の所得税の決まり方</h2>
+  <div class="formula">賞与の所得税 =（賞与 − 賞与の社会保険料）× 算出率（前月の課税対象額と扶養人数で決定）</div>
+  <p>算出率は0%から45.945%まで21段階。前月の課税対象額が同じでも、扶養親族等の数で区分の幅が変わります。たとえば前月が19.6万円・扶養0人なら4.084%、扶養2人なら2.042%です。この計算機は算出率の表を全表収録し、国税庁の設例（賞与55.4万円・前月19.6万円・扶養2人 → 所得税¥9,585）で検証しています。</p>
+  <h3>前月の給与がない場合</h3>
+  <p>入社直後などで前月の給与がない場合（賞与が前月の10倍を超える場合も）は、算出率ではなく<strong>月額表による方法</strong>に切り替わります：（賞与 − 社会保険料）÷ 6（算定基礎期間が6か月を超える場合は ÷ 12）を月額表に当て、6倍（12倍）します。この計算機も自動で切り替えます。</p>
+  <h3>賞与の社会保険料</h3>
+  <p>賞与にも社会保険料がかかります。対象は1,000円未満を切り捨てた<strong>標準賞与額</strong>で、健康保険は年度累計573万円、厚生年金は1回あたり150万円が上限です。雇用保険は賞与全額に0.5%（一般）です。</p>
+
+  <h2>よくある質問</h2>
+  <div class="faq">
+    <details class="acc"><summary>賞与の所得税は「取られすぎ」ではありませんか？</summary><div class="acc-body"><div class="acc-in"><div>算出率は「賞与が毎月同額あるとしたら」という前提の平準化された率で、最終税額ではありません。年末調整で年間の税額に合わせて精算され、差額は還付（または追加徴収）されます。</div></div></div></details>
+    <details class="acc"><summary>前月の給与が残業で多かった月は、賞与の税率も上がりますか？</summary><div class="acc-body"><div class="acc-in"><div>上がります。算出率は前月の課税対象額だけで決まるため、前月に残業代が多いと賞与の所得税も増えます（年末調整で精算されます）。</div></div></div></details>
+    <details class="acc"><summary>賞与から住民税は引かれますか？</summary><div class="acc-body"><div class="acc-in"><div>引かれません。住民税は前年の所得に対して月給から特別徴収されるもので、賞与は課税対象の所得には含まれますが、天引きは月給側で行われます。</div></div></div></details>
+  </div>
+
+  <h2>関連する計算機</h2>
+  <div class="mesh">
+    <a href="/take-home/">月給の手取り計算</a>
+    <a href="/annual/">年収・年税額の計算</a>
+    <a href="/resident-tax/">住民税</a>
+    <a href="/methodology/">検証と出典</a>
+  </div>
+</Layout>

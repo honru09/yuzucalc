@@ -1,0 +1,69 @@
+---
+import { monthlyTakeHome, residentTax, monthlyPremiums, prefectures } from '../lib/engine/index.ts';
+import { yen } from '../lib/ui.ts';
+
+interface Props { lang: 'ja' | 'en' }
+const { lang } = Astro.props;
+const ja = lang === 'ja';
+
+// Default persona: first job, monthly gross ¥280,000, Tokyo, age 23.
+const gross = 280000;
+const prem = monthlyPremiums(gross, { prefectureSlug: 'tokyo', careApplies: false });
+const monthlySI = prem.total;
+const annualGross = gross * 12;
+const rt = residentTax({ grossSalary: annualGross, socialInsurance: monthlySI * 12, incomeYear: 'r7' });
+const y1 = monthlyTakeHome({ grossPay: gross, prefectureSlug: 'tokyo', age: 23, dependents: 0, column: 'kou' });
+const y2 = monthlyTakeHome({ grossPay: gross, prefectureSlug: 'tokyo', age: 24, dependents: 0, column: 'kou', residentTaxMonthly: rt.monthlyInstalment });
+---
+
+<div class="card" id="y2-box">
+  <form class="calc" id="y2-form">
+    <label>{ja ? '月給（額面）' : 'Monthly gross salary'}<input name="gross" type="number" inputmode="numeric" min="0" step="5000" value={gross} /></label>
+    <label>{ja ? '勤務先の都道府県' : 'Prefecture of employer'}
+      <select name="prefecture">
+        {prefectures.map((p) => <option value={p.slug} selected={p.slug === 'tokyo'}>{ja ? p.ja : p.en}</option>)}
+      </select>
+    </label>
+    <label>{ja ? '年齢' : 'Age'}<input name="age" type="number" inputmode="numeric" min="16" max="64" value="23" /></label>
+  </form>
+  <table class="breakdown" style="margin-top:16px"><tbody>
+    <tr>
+      <td><strong>{ja ? '1年目（住民税なし）' : 'Year 1 (no resident tax yet)'}</strong><br />
+      <span class="src">{ja ? '住民税は前年の所得に課税されるため、初年度は天引きされません。' : 'Resident tax is levied on last year\u2019s income, so nothing is deducted in your first year.'}</span></td>
+      <td class="v num"><span data-v="y1">{yen(y1.net)}</span><span class="src"> / {ja ? '月' : 'mo'}</span></td>
+    </tr>
+    <tr>
+      <td><strong>{ja ? '2年目6月以降（住民税あり）' : 'Year 2, from June (resident tax starts)'}</strong><br />
+      <span class="src">{ja ? '住民税の年額' : 'Annual resident tax'} <span class="num" data-v="rtAnnual">{yen(rt.annual)}</span> → {ja ? '月額' : 'monthly'} <span class="num" data-v="rtMonthly">{yen(rt.monthlyInstalment)}</span></span></td>
+      <td class="v num"><span data-v="y2">{yen(y2.net)}</span><span class="src"> / {ja ? '月' : 'mo'}</span></td>
+    </tr>
+    <tr class="total">
+      <td>{ja ? '手取りの差（＝2年目の「手取りが減った」の正体）' : 'The gap (the famous year-2 pay drop)'}</td>
+      <td class="v num" data-v="gap">−{yen(y1.net - y2.net)}</td>
+    </tr>
+  </tbody></table>
+</div>
+
+<script>
+  import { monthlyTakeHome, residentTax, monthlyPremiums } from '../lib/engine/index.ts';
+  import { yen, setText, field, fieldNum } from '../lib/ui.ts';
+  const form = document.getElementById('y2-form') as HTMLFormElement;
+  const box = document.getElementById('y2-box') as HTMLElement;
+  function compute() {
+    const gross = Math.max(0, fieldNum(form, 'gross', 0));
+    const pref = field(form, 'prefecture').value;
+    const age = Math.min(64, Math.max(16, fieldNum(form, 'age', 23)));
+    const prem = monthlyPremiums(gross, { prefectureSlug: pref, careApplies: age >= 40 });
+    const rt = residentTax({ grossSalary: gross * 12, socialInsurance: prem.total * 12, incomeYear: 'r7' });
+    const y1 = monthlyTakeHome({ grossPay: gross, prefectureSlug: pref, age, dependents: 0, column: 'kou' });
+    const y2 = monthlyTakeHome({ grossPay: gross, prefectureSlug: pref, age: age + 1, dependents: 0, column: 'kou', residentTaxMonthly: rt.monthlyInstalment });
+    setText(box, 'y1', yen(y1.net));
+    setText(box, 'y2', yen(y2.net));
+    setText(box, 'rtAnnual', yen(rt.annual));
+    setText(box, 'rtMonthly', yen(rt.monthlyInstalment));
+    setText(box, 'gap', '−' + yen(y1.net - y2.net));
+  }
+  form.addEventListener('input', compute);
+  form.addEventListener('change', compute);
+  compute();
+</script>

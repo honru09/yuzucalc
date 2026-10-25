@@ -1,0 +1,137 @@
+---
+import { bonusTakeHome, prefectures } from '../lib/engine/index.ts';
+import { yen, num } from '../lib/ui.ts';
+
+interface Props { lang: 'ja' | 'en' }
+const { lang } = Astro.props;
+const ja = lang === 'ja';
+const t = ja
+  ? {
+      bonus: '賞与（額面）', prefecture: '勤務先の都道府県', age: '年齢',
+      dependents: '扶養親族等の数', column: '源泉徴収の欄',
+      kou: '甲欄', otsu: '乙欄',
+      prior: '前月の月給（額面）※ない場合は空欄',
+      basis: '賞与の算定基礎期間', basis6: '6か月以内', basis12: '6か月を超える（年俸制など）',
+      override: '健康保険料率（手入力・％）',
+      result: '計算結果', net: '手取り', perBonus: '1回あたり',
+      rows: { bonus: '賞与（額面）', standard: '標準賞与額', health: '健康保険料', child: '子ども・子育て支援金', pension: '厚生年金保険料', employment: '雇用保険料', si: '社会保険料 合計', tax: '所得税（源泉徴収）', net: '手取り' },
+      rateNote: (r: string) => `前月の課税対象額から算出率の表で計算（${r}）`,
+      fallbackNote: '前月の給与がないため、月額表による方法で計算',
+    }
+  : {
+      bonus: 'Bonus (gross)', prefecture: 'Prefecture of employer', age: 'Age',
+      dependents: 'Dependents', column: 'Withholding column',
+      kou: 'Ko-ran', otsu: 'Otsu-ran',
+      prior: 'Last month\u2019s gross salary (leave empty if none)',
+      basis: 'Bonus basis period', basis6: 'Up to 6 months', basis12: 'Over 6 months (annual salary system)',
+      override: 'Health rate override (%)',
+      result: 'Result', net: 'Take-home', perBonus: 'per payment',
+      rows: { bonus: 'Bonus (gross)', standard: 'Standard bonus base', health: 'Health insurance', child: 'Child & child-rearing levy', pension: 'Employees\u2019 pension', employment: 'Employment insurance', si: 'Social insurance total', tax: 'Income tax (withheld)', net: 'Take-home' },
+      rateNote: (r: string) => `Bonus withholding-rate table applied (${r})`,
+      fallbackNote: 'No prior-month salary: computed with the monthly-table method',
+    };
+
+const def = bonusTakeHome({
+  bonus: 600000, prefectureSlug: 'tokyo', age: 35, dependents: 2, column: 'kou', priorMonthGross: 360000,
+});
+---
+
+<div class="grid2">
+  <div class="card">
+    <form class="calc" id="bn-form">
+      <label class="unit" data-unit={ja ? '円' : 'JPY'}>{t.bonus}<input name="bonus" type="number" inputmode="numeric" min="0" step="10000" value="600000" /></label>
+      <label class="unit" data-unit={ja ? '円' : 'JPY'}>{t.prior}<input name="prior" type="number" inputmode="numeric" min="0" step="1000" value="360000" /></label>
+      <label>{t.prefecture}
+        <select name="prefecture">
+          {prefectures.map((p) => <option value={p.slug} selected={p.slug === 'tokyo'}>{ja ? p.ja : p.en}{p.healthRatePct != null ? ` — ${p.healthRatePct.toFixed(2)}%` : ''}</option>)}
+        </select>
+      </label>
+      <label>{t.age}<input name="age" type="number" inputmode="numeric" min="16" max="100" value="35" /></label>
+      <label>{t.dependents}<input name="dependents" type="number" inputmode="numeric" min="0" max="15" value="2" /></label>
+      <label>{t.column}
+        <select name="column"><option value="kou">{t.kou}</option><option value="otsu">{t.otsu}</option></select>
+      </label>
+      <label>{t.basis}
+        <select name="basis"><option value="6">{t.basis6}</option><option value="12">{t.basis12}</option></select>
+      </label>
+      <label class="unit" data-unit="%">{t.override}<input name="override" type="number" inputmode="decimal" min="0" max="20" step="0.01" /></label>
+    </form>
+    <p class="src" style="margin-top:14px">
+      {ja
+        ? '賞与の所得税は「前月の社会保険料控除後の給与」をもとに算出率の表（令和8年分）で決まります。前月の給与がない場合は月額表による方法に切り替わります。'
+        : 'Bonus withholding uses the official rate table (2026) keyed by last month\u2019s pay after social insurance. With no prior-month salary, the monthly-table method applies instead.'}
+    </p>
+  </div>
+  <div class="card result" id="bn-result" aria-live="polite">
+    <div class="result-head">
+      <div class="src" style="font-weight:700; letter-spacing:.06em">{t.result}</div>
+      <button type="button" class="btn ghost noprint" onclick="window.print()">{ja ? '結果を印刷' : 'Print result'}</button>
+    </div>
+    <div class="net-big"><span data-v="net">{yen(def.net)}</span> <span class="unit">/ {t.perBonus}</span></div>
+    <table class="breakdown"><tbody>
+      <tr><td>{t.rows.bonus}</td><td class="v num" data-v="bonus">{yen(600000)}</td></tr>
+      <tr class="sub"><td>{t.rows.standard}</td><td class="v num" data-v="standard">{yen(def.premiums.standardBonus)}</td></tr>
+      <tr class="sub"><td>{t.rows.health}</td><td class="v num" data-v="health">−{yen(def.premiums.health)}</td></tr>
+      <tr class="sub"><td>{t.rows.child}</td><td class="v num" data-v="child">−{yen(def.premiums.childSupport)}</td></tr>
+      <tr class="sub"><td>{t.rows.pension}</td><td class="v num" data-v="pension">−{yen(def.premiums.pension)}</td></tr>
+      <tr class="sub"><td>{t.rows.employment}</td><td class="v num" data-v="employment">−{yen(def.premiums.employment)}</td></tr>
+      <tr><td>{t.rows.si}</td><td class="v num" data-v="si">−{yen(def.premiums.total)}</td></tr>
+      <tr><td>{t.rows.tax}<br /><span class="src" data-v="taxNote"></span></td><td class="v num" data-v="tax">−{yen(def.incomeTax)}</td></tr>
+      <tr class="total"><td>{t.rows.net}</td><td class="v num" data-v="net2">{yen(def.net)}</td></tr>
+    </tbody></table>
+  </div>
+</div>
+<div class="sticky-net" aria-hidden="true">
+  <span>{t.rows.net}<span class="lbl">/ {t.perBonus}</span></span>
+  <strong data-sticky>{yen(def.net)}</strong>
+</div>
+
+<script>
+  import { bonusTakeHome, bonusRatePct } from '../lib/engine/index.ts';
+  import { yen, setText, queryParams, syncQuery, field, fieldNum, countUpYen, flash } from '../lib/ui.ts';
+  const form = document.getElementById('bn-form') as HTMLFormElement;
+  const result = document.getElementById('bn-result') as HTMLElement;
+  const jaPage = document.documentElement.lang === 'ja';
+  function applyQuery() {
+    const q = queryParams();
+    const map: Record<string, string> = { b: 'bonus', prior: 'prior', pref: 'prefecture', age: 'age', dep: 'dependents', col: 'column', basis: 'basis', hr: 'override' };
+    for (const [k, n] of Object.entries(map)) if (q[k] != null) field(form, n).value = q[k];
+  }
+  function compute() {
+    const bonus = Math.max(0, fieldNum(form, 'bonus', 0));
+    const priorRaw = field(form, 'prior').value;
+    const prior = priorRaw === '' ? null : Math.max(0, parseFloat(priorRaw) || 0);
+    const prefecture = field(form, 'prefecture').value;
+    const age = Math.min(100, Math.max(16, fieldNum(form, 'age', 35)));
+    const dependents = Math.min(15, Math.max(0, Math.floor(fieldNum(form, 'dependents', 0))));
+    const column = field(form, 'column').value as 'kou' | 'otsu';
+    const basis = parseInt(field(form, 'basis').value, 10);
+    const ovRaw = field(form, 'override').value;
+    const override = ovRaw === '' ? null : parseFloat(ovRaw);
+    const r = bonusTakeHome({ bonus, prefectureSlug: prefecture, age, dependents, column, priorMonthGross: prior, basisMonths: basis, healthRateOverridePct: override });
+    countUpYen(result.querySelector('[data-v="net"]'), r.net); setText(result, 'net2', yen(r.net));
+    const sticky = document.querySelector('[data-sticky]');
+    if (sticky) sticky.textContent = yen(r.net);
+    setText(result, 'bonus', yen(bonus));
+    setText(result, 'standard', yen(r.premiums.standardBonus));
+    setText(result, 'health', '−' + yen(r.premiums.health));
+    setText(result, 'child', '−' + yen(r.premiums.childSupport));
+    setText(result, 'pension', '−' + yen(r.premiums.pension));
+    setText(result, 'employment', '−' + yen(r.premiums.employment));
+    setText(result, 'si', '−' + yen(r.premiums.total));
+    setText(result, 'tax', '−' + yen(r.incomeTax));
+    let note = '';
+    if (r.priorMonthA !== null && r.bonusAfterPremiums <= 10 * r.priorMonthA) {
+      try { note = jaPage ? `算出率 ${bonusRatePct(r.priorMonthA, column, dependents).toFixed(3)}%` : `rate ${bonusRatePct(r.priorMonthA, column, dependents).toFixed(3)}%`; } catch { note = ''; }
+    } else {
+      note = jaPage ? '月額表による方法（前月の給与なし等）' : 'monthly-table method (no prior-month salary, etc.)';
+    }
+    setText(result, 'taxNote', note);
+    syncQuery({ b: bonus, prior: prior ?? '', pref: prefecture, age, dep: dependents, col: column === 'otsu' ? 'otsu' : null, basis: basis === 12 ? 12 : null, hr: override });
+  }
+  applyQuery();
+  form.addEventListener('input', compute);
+  form.addEventListener('change', compute);
+  form.addEventListener('change', () => flash(result));
+  compute();
+</script>
